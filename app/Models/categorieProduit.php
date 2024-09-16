@@ -10,6 +10,6 @@ class categorieProduit extends Model
     use HasFactory;
     protected $guarded = [];
     public function produits(){
-        return $this->hasMany(produit::class);
+        return $this->hasMany(Produit::class);
     }
 }

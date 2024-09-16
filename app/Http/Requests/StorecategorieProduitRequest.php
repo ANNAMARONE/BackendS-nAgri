@@ -22,7 +22,9 @@ class StorecategorieProduitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+
+                'libelle' => 'required|string',
+            
         ];
     }
 }

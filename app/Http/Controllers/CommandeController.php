@@ -13,7 +13,8 @@ class CommandeController extends Controller
      */
     public function index()
     {
-        //
+    $commandes=commande::with("produits")->get();
+    return response()->json($commandes);
     }
 
     /**
@@ -29,7 +30,18 @@ class CommandeController extends Controller
      */
     public function store(StorecommandeRequest $request)
     {
-        //
+       $commande=commande::create([
+        "user_id"=>$request->user_id,
+        'total'=> $request->total,
+        'statut'=>$request->statut,
+       ]);
+       foreach($request->produits as $produit){
+        $commande->produits()->attach($produit['produit_id'],[
+            'quantité'=>$produit['quantite'],
+            'prix'=>$produit['prix'],
+        ]);
+       }
+       return response()->json($commande,201);
     }
 
     /**

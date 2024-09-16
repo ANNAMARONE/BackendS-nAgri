@@ -15,7 +15,8 @@ class commande extends Model
     public function paiement(){
         return $this->hasMany(paiement::class);
     }
-    public function produit(){
-        return $this->hasMany(produit::class);
+    public function produits()
+    {
+        return $this->belongsToMany(Produit::class, 'commande_produit')->withPivot('quantite', 'prix');
     }
 }

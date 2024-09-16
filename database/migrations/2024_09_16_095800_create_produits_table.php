@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\categorieProduit;
 use App\Models\User;
+use App\Models\categorieProduit;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -20,11 +20,11 @@ return new class extends Migration
             $table->text('description');
             $table->integer('quantite');
             $table->integer('prix');
-            $table->enum('statut',['en stock','en rupture'])->default('en stock');
-             
+            $table->enum('statut', ['en stock', 'en rupture'])->default('en stock');
+            // Clés étrangères
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
-            
             $table->foreignIdFor(categorieProduit::class)->constrained()->onDelete('cascade');
+
             $table->timestamps();
         });
     }

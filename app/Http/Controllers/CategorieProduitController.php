@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\categorieProduit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\StorecategorieProduitRequest;
 use App\Http\Requests\UpdatecategorieProduitRequest;
-use App\Models\categorieProduit;
 
 class CategorieProduitController extends Controller
 {
@@ -13,7 +15,8 @@ class CategorieProduitController extends Controller
      */
     public function index()
     {
-        //
+        $catégorieProduit = CategorieProduit::all();
+        return response()->json($catégorieProduit,200);
     }
 
     /**
@@ -27,10 +30,31 @@ class CategorieProduitController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorecategorieProduitRequest $request)
+    public function store(Request $request)
     {
-        //
+        // Créer une nouvelle instance de CategorieProduit avec les données validées
+        $validator = Validator::make($request->all(), [
+            "libelle"=> "required|string",
+        ]);
+    
+        // Retourner une réponse JSON avec le statut 201 pour indiquer la création réussie
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        $categorieProduit= new CategorieProduit();
+
+        $categorieProduit->fill($request->only(['libelle']));
+
+        $categorieProduit->save();
+        return response()->json([
+            'message' => 'catégorie ajouté avec succès',
+            'article' => $categorieProduit
+        ], 201);
+    
     }
+    
 
     /**
      * Display the specified resource.

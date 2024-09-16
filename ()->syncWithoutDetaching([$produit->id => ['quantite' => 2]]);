@@ -1,0 +1,14 @@
+[90m= [39m[34;4mApp\Models\Produit[39;24m {#5136
+    [34mid[39m: [35m1[39m,
+    [34mlibelle[39m: "[32mProduit 1[39m",
+    [34mimage[39m: "[32mimage1.jpg[39m",
+    [34mdescription[39m: "[32mDescription du produit 1[39m",
+    [34mquantite[39m: [35m10[39m,
+    [34mprix[39m: [35m100[39m,
+    [34mstatut[39m: "[32men stock[39m",
+    [34muser_id[39m: [35m1[39m,
+    [34mcategorie_produit_id[39m: [35m1[39m,
+    [34mcreated_at[39m: [36mnull[39m,
+    [34mupdated_at[39m: [36mnull[39m,
+  }
+
