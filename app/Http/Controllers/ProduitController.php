@@ -21,9 +21,15 @@ class ProduitController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        if (!$request->user()) {
+            return response()->json(['error' => 'Veuillez vous connecter.'], 401);
+        }
         $produit = Produit::orderBy("created_at","desc")->paginate(10);
+        if ($produit->isEmpty()) {
+            return response()->json(['message' => 'Aucune produit trouvée.'], 404);
+        }
         return response()->json($produit,200);
     }
 

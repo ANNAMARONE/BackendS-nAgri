@@ -14,9 +14,15 @@ class ArticleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        if (!$request->user()) {
+            return response()->json(['error' => 'Veuillez vous connecter.'], 401);
+        }
         $articles = Article::orderBy("created_at","desc")->paginate(10);
+        if ($articles->isEmpty()) {
+            return response()->json(['message' => 'Aucune articles trouvée.'], 404);
+        }
         return response()->json($articles,200);
     }
 
@@ -133,16 +139,22 @@ class ArticleController extends Controller
             'article' => $article
         ], 200);
     }
-    
-    
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
+        if (!$request->user()) {
+            return response()->json(['error' => 'Veuillez vous connecter.'], 401);
+        }
       $article=article::findOrFail($id);
+
+      if (!$article) {
+        return response()->json(['error' => 'Événement non trouvé.'], 404);
+    }
       $article->delete();
+
       return response()->json([
         'message' => 'Article supprimer avec succé',
         'article' => $article

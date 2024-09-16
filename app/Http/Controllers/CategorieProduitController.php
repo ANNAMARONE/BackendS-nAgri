@@ -13,9 +13,15 @@ class CategorieProduitController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        if (!$request->user()) {
+            return response()->json(['error' => 'Veuillez vous connecter.'], 401);
+        }
         $catégorieProduit = CategorieProduit::all();
+        if ( $catégorieProduit->isEmpty()) {
+            return response()->json(['message' => 'Aucune catégorie trouvée.'], 404);
+        }
         return response()->json($catégorieProduit,200);
     }
 
