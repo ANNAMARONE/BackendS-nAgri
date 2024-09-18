@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request; // Correct import for Request
+use App\Models\Client;
+use App\Models\Producteur;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Http\Request; // Correct import for Request
 
 class AuthController extends Controller
 {
@@ -18,34 +20,59 @@ class AuthController extends Controller
             'telephone' => 'required|unique:users,telephone|regex:/^([0-9\s\-\+\(\)]*)$/|min:9',
             "email" => 'required|email|unique:users,email|max:255',
             'password' => 'required|min:8',
-            'secteur_id'=>'required'
+            'role' => 'required|string|in:admin,client,producteur',
+            
         ]);
-    
+ // Validation conditionnelle pour les champs 'acteur' et 'region'
+ $validator->sometimes('acteur', 'required|in:Agriculteurs,Jardiniers', function ($input) {
+    return $input->role == 'producteur';
+});
+
+$validator->sometimes('region', 'required|in:Dakar,Diourbel,Fatick,Kaffrine,Kaolack,Kédougou,Kolda,Louga,Matam,Saint-Louis,Sédhiou,Tambacounda,Thiès,Ziguinchor', function ($input) {
+    return $input->role == 'producteur';
+});
+
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
-    
-        $user = new User;
-        $user->name = $request->name;
-        $user->profile = $request->profile;
-        $user->adresse = $request->adresse;
-        $user->telephone = $request->telephone;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password); 
-        $user->secteur_id = $request->secteur_id;
-    
-        // Handle the profile image
+
+        $filename = null;
         if ($request->hasFile('profile')) {
             $image = $request->file('profile');
             $filename = time() . '.' . $image->getClientOriginalExtension();
             $path = $image->storeAs('profiles', $filename, 'public');
-            $user->profile = $filename;
         }
-    
-        $user->save();
-    
+
+        $user = User::create([
+            'name' => $request->name,
+            'profile' => $filename,
+            'adresse' => $request->adresse,
+            'email' => $request->email,
+            'telephone' => $request->telephone,
+            'password' => bcrypt($request->password),
+            'role' => $request->role,
+        ]);
+
+        if ($request->role == 'client') {
+            $user->assignRole('client');
+            Client::create([
+                'user_id' => $user->id,
+            ]);
+        } elseif ($request->role == 'producteur') {
+            $user->assignRole('producteur');
+            Producteur::create([
+                'user_id' => $user->id,
+                'acteur' => $request->acteur,
+                'region' => $request->region,
+            ]);
+        }
+        elseif ($request->role === 'admin') {
+            $user->assignRole('admin');
+        }
+
         return response()->json($user, 201);
     }
+
     
     public function login() {
        $credentials=request([

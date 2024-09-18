@@ -24,7 +24,6 @@ class UsersSeeder extends Seeder
                 'profile' => 'Profile ' . $i,
                 'adresse' => Str::random(10) . ' St',
                 'telephone' => '0' . rand(600000000, 999999999),
-                'secteur_id' => rand(1, 2), // Assurez-vous que ces secteurs existent dans la table 'secteurs'
                 'email' => 'user' . $i . '@example.com',
                 'email_verified_at' => now(),
                 'password' => Hash::make('password'),

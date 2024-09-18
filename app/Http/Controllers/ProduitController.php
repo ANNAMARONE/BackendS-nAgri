@@ -36,6 +36,18 @@ class ProduitController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+public function AfficheProduitParUser(Request $request){
+    if (!$request->user()) {
+        return response()->json(['error' => 'Veuillez vous connecter.'], 401);
+    }
+    $produit = Produit::orderBy("created_at","desc")->paginate(10)
+    ->where('user_id', Auth::user()->id);
+    if ($produit->isEmpty()) {
+        return response()->json(['message' => 'Aucune produit trouvée.'], 404);
+    }
+    return response()->json($produit,200);   
+}
+
     public function create()
     {
         //

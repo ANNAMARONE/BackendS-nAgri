@@ -6,17 +6,17 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-class ComentaireSeeder extends Seeder
+class CommentaireSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $comentaires = [];
+        $commentaires = [];
 
         for ($i = 1; $i <= 10; $i++) {
-            $comentaires[] = [
+            $commentaires[] = [
                 'description' => 'Commentaire ' . $i,
                 'user_id' => 1, // Assurez-vous que cet ID d'utilisateur existe
                 'forum_id' => 1, // Assurez-vous que cet ID de forum existe
@@ -25,7 +25,7 @@ class ComentaireSeeder extends Seeder
             ];
         }
 
-        DB::table('comentaires')->insert($comentaires);
+        DB::table('commentaires')->insert($commentaires);
     
     }
 }

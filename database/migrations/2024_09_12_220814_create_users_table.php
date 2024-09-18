@@ -17,8 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('profile');
             $table->string('adresse');
-            $table->integer('telephone');
-            $table->foreignIdFor(secteur::class)->constrained()->onDelete('cascade');
+            $table->string('telephone');
             $table->softDeletes('deleted_at', precision: 0);
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();

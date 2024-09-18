@@ -51,8 +51,8 @@ class RessourceController extends Controller
             'libelle' => 'required|string|max:255',
             'image' => 'required|mimes:jpeg,jpg,png|max:2048',
             'description' => 'required|string',
-            'piece_jointe' => 'required|file|mimes:pdf|max:2048',
-            'categorie_ressource_id' => 'required|integer|exists:categories,id', // Assurez-vous que la catégorie existe
+            'piéce_join' => 'required|file|mimes:pdf|max:2048',
+            'categorie_ressource_id' => 'required|integer',
         ]);
     
         if ($validator->fails()) {
@@ -66,10 +66,10 @@ class RessourceController extends Controller
         $ressource->fill($request->only(['libelle', 'description', 'categorie_ressource_id']));
     
         // Gestion du fichier PDF
-        if ($request->hasFile('piece_jointe')) {
-            $file = $request->file('piece_jointe');
+        if ($request->hasFile('piéce_join')) {
+            $file = $request->file('piéce_join');
             $filePath = $file->store('pdfs', 'public');
-            $ressource->piece_jointe = $filePath; 
+            $ressource->piéce_join = $filePath; 
         }
     
         // Gestion de l'image
@@ -132,10 +132,10 @@ class RessourceController extends Controller
         // Validation des données
         $validator = Validator::make($request->all(), [
             'libelle' => 'required|string|max:255',
-            'image' => 'sometimes|nullable|mimes:jpeg,jpg,png|max:2048', // Image est optionnelle
+            'image' => 'sometimes|nullable|mimes:jpeg,jpg,png|max:2048', 
             'description' => 'required|string',
-            'piece_jointe' => 'sometimes|nullable|file|mimes:pdf|max:2048', // PDF est optionnel
-            'categorie_ressource_id' => 'required|integer|exists:categories,id', // Assurez-vous que la catégorie existe
+            'piéce_join' => 'sometimes|nullable|file|mimes:pdf|max:2048',
+            'categorie_ressource_id' => 'required|integer', 
         ]);
     
         // Si la validation échoue, retourner une réponse JSON avec les erreurs
@@ -146,7 +146,7 @@ class RessourceController extends Controller
         }
     
         // Mettre à jour les champs de la ressource sauf les fichiers
-        $ressource->fill($request->except('image', 'piece_jointe'));
+        $ressource->fill($request->except('image', 'piéce_join'));
     
         // Gestion de l'image
         if ($request->hasFile('image')) {
@@ -163,16 +163,16 @@ class RessourceController extends Controller
         }
     
         // Gestion du fichier PDF
-        if ($request->hasFile('piece_jointe')) {
+        if ($request->hasFile('piéce_join')) {
             // Supprimer l'ancien PDF si nécessaire
-            if ($ressource->piece_jointe && File::exists(storage_path('app/public/pdfs/' . $ressource->piece_jointe))) {
-                File::delete(storage_path('app/public/pdfs/' . $ressource->piece_jointe));
+            if ($ressource->piéce_join && File::exists(storage_path('app/public/pdfs/' . $ressource->piéce_join))) {
+                File::delete(storage_path('app/public/pdfs/' . $ressource->piéce_join));
             }
     
             // Sauvegarder le nouveau PDF
-            $file = $request->file('piece_jointe');
+            $file = $request->file('piéce_join');
             $filePath = $file->store('pdfs', 'public');
-            $ressource->piece_jointe = $filePath;
+            $ressource->piéce_join = $filePath;
         }
     
         // Sauvegarder les modifications

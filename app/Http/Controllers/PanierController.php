@@ -26,7 +26,7 @@ class PanierController extends Controller
         // Récupérer tous les paniers associés à cet utilisateur
         $paniers = Panier::where('user_id', $user->id)
                          ->where('etat_commande', 'en cours')
-                         ->with('produit') // Inclure les informations du produit
+                         ->with('produits') // Inclure les informations du produit
                          ->get();
 
         // Retourner les paniers sous forme de réponse JSON
@@ -60,11 +60,13 @@ public function ajouterProduitAuPanier(Request $request)
 {
     $request->validate([
         'produit_id' => 'required|exists:produits,id',
-        'quantite' => 'required|integer|min:1'
+        'quantite' => 'required|integer|min:1',
+        'reference' => 'nullable|string|max:255'
     ]);
 
     $produitId = $request->input('produit_id');
     $quantite = $request->input('quantite');
+    $reference = $request->input('reference');
 
     \DB::beginTransaction();
 
@@ -94,7 +96,11 @@ public function ajouterProduitAuPanier(Request $request)
             $panier = Panier::create([
                 'user_id' => $request->user()->id,
                 'etat_commande' => 'en cours',
-                'montant_total' => 0 
+                'montant_total' => 0,
+                'produit_id' => $produitId,
+                'quantite' => $quantite,
+                'prix_unitaire' => $prixUnitaire,
+                'reference' => $reference
             ]);
         }
 
@@ -107,7 +113,6 @@ public function ajouterProduitAuPanier(Request $request)
         if ($existingProduct) {
             // Mettre à jour la quantité et le prix si le produit est déjà dans le panier
             $existingProduct->quantite += $quantite;
-            $existingProduct->prix_unitaire = $prixUnitaire;
             $existingProduct->montant_total += $montantTotalProduit;
             $existingProduct->save();
         } else {
@@ -118,7 +123,8 @@ public function ajouterProduitAuPanier(Request $request)
                 'quantite' => $quantite,
                 'prix_unitaire' => $prixUnitaire,
                 'etat_commande' => 'en cours',
-                'montant_total' => $montantTotalProduit
+                'montant_total' => $montantTotalProduit,
+                'reference' => $reference
             ]);
         }
 
@@ -135,6 +141,8 @@ public function ajouterProduitAuPanier(Request $request)
         return response()->json(['error' => 'Une erreur est survenue lors de l\'ajout du produit au panier : ' . $e->getMessage()], 500);
     }
 }
+
+
 
 //calculer le montant totale des produit du panier
 public function calculerMontantTotalProduit(Request $request){
@@ -238,6 +246,29 @@ public function update(Request $request, $panierId)
     return response()->json(['success' => 'Panier mis à jour avec succès.'], 200);
 }
 
+public function afficherCommandes(Request $request)
+{
+    // Vérifier si l'utilisateur est authentifié
+    if (!$request->user()) {
+        return response()->json(['error' => 'Utilisateur non authentifié'], 401);
+    }
+
+    $userId = $request->user()->id;
+
+    // Récupérer toutes les commandes de l'utilisateur (commandes validées ou expédiées)
+    $commandes = Panier::where('user_id', $userId)
+                       ->whereIn('etat_commande', ['validée', 'expédiée'])
+                       ->with('produits') 
+                       ->get();
+
+    // Vérifier si l'utilisateur a des commandes
+    if ($commandes->isEmpty()) {
+        return response()->json(['message' => 'Aucune commande trouvée.'], 404);
+    }
+
+    // Retourner les commandes sous forme de réponse JSON
+    return response()->json($commandes);
+}
 
 
 }

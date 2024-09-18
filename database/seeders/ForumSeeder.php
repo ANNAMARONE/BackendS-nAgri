@@ -19,7 +19,6 @@ class ForumSeeder extends Seeder
             $forums[] = [
                 'libelle' => 'Forum ' . $i,
                 'description' => 'Description du forum ' . $i,
-                'date' => now()->addDays($i),
                 'user_id' => 1, // Assurez-vous que cet ID d'utilisateur existe
                 'created_at' => now(),
                 'updated_at' => now(),
