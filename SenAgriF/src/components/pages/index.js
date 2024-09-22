@@ -1,0 +1,7 @@
+export * from "/Accueil"
+export * from "/Evenement"
+export * from "/Produit"
+export * from "/Article"
+export * from "/Forum"
+export * from "/Login"
+export * from "/Register"
