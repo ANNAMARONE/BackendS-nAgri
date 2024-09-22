@@ -67,11 +67,11 @@ Route::middleware('auth.jwt')->group(function () {
     Route::get('/forum/{id}', [ForumController::class, 'show']);
     Route::post('/modifier_forums/{id}', [ForumController::class,'update']);
   });
-  
+  Route::post('/payment', [CinetPayController::class, 'Payment']);
    // Routes accessibles uniquement aux clients
   Route::middleware(['role:client'])->group(function () {
      //payement
-     Route::post('/payment', [CinetPayController::class, 'Payment']);
+   
   
      Route::match(['get', 'post'], '/notify_url', [CinetPayController::class, 'notify_url'])->name('notify_url');
      Route::match(['get', 'post'], '/return_url', [CinetPayController::class, 'return_url'])->name('return_url');
