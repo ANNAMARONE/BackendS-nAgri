@@ -60,7 +60,7 @@ namespace App\Http\Controllers\Annotations ;
 
 
  * @OA\GET(
- *     path="/api/forum_Détail/{id}",
+ *     path="/api/forum/{id}",
  *     summary="voire detail d'un forum",
  *     description="",
  *         security={

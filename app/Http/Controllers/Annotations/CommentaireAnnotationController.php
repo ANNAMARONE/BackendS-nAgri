@@ -47,7 +47,7 @@ namespace App\Http\Controllers\Annotations ;
  *             @OA\Schema(
  *                 type="object",
  *                 properties={
- *                     @OA\Property(property="description", type="string"),
+ *                     @OA\Property(property="", type="string"),
  *                 },
  *             ),
  *         ),

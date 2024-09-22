@@ -44,7 +44,7 @@ Route::middleware('auth.jwt')->group(function () {
 
 
     Route::get('/ressources',[RessourceController::class,'index']);
-    Route::get('/ressource_Détail/{id}', [RessourceController::class,'show']);
+    Route::get('/ressource/{id}', [RessourceController::class,'show']);
          //gestion evenement
   Route::get('/evenements',[EvenementController::class,'index']);
   

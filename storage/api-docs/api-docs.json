@@ -1069,13 +1069,13 @@
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "description": {
+                                    "": {
                                         "type": "string"
                                     }
                                 }
                             },
                             "example": {
-                                "description": ""
+                                "": ""
                             }
                         }
                     }
@@ -1565,7 +1565,7 @@
                 ]
             }
         },
-        "/api/forum_Détail/{id}": {
+        "/api/forum/{id}": {
             "get": {
                 "summary": "voire detail d'un forum",
                 "description": "",
@@ -1899,7 +1899,7 @@
                 ]
             }
         },
-        "/api/article_Détail/{id}": {
+        "/api/article/{id}": {
             "get": {
                 "summary": "détail d'un article",
                 "description": "",
@@ -1946,18 +1946,7 @@
                         "name": "User-Agent",
                         "type": "string"
                     }
-                ],
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {}
-                            },
-                            "example": {}
-                        }
-                    }
-                }
+                ]
             }
         },
         "/api/modifier_Article/{id}": {
@@ -2192,7 +2181,7 @@
                 ]
             }
         },
-        "/api/evenement_Détail/{id}": {
+        "/api/evenement/{id}": {
             "get": {
                 "summary": "voire detail d'un événement",
                 "description": "",
@@ -2239,18 +2228,7 @@
                         "name": "User-Agent",
                         "type": "string"
                     }
-                ],
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {}
-                            },
-                            "example": {}
-                        }
-                    }
-                }
+                ]
             }
         },
         "/api/supprimer_evenement/{id}": {
@@ -2644,7 +2622,7 @@
                 }
             }
         },
-        "/api/ressource_Détail/{id}": {
+        "/api/ressource/{id}": {
             "get": {
                 "summary": "voire les details d'un ressource",
                 "description": "",
@@ -2691,18 +2669,7 @@
                         "name": "User-Agent",
                         "type": "string"
                     }
-                ],
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {}
-                            },
-                            "example": {}
-                        }
-                    }
-                }
+                ]
             }
         },
         "/api/ajout_ressources": {
@@ -3314,15 +3281,9 @@
                         "multipart/form-data": {
                             "schema": {
                                 "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "string"
-                                    }
-                                }
+                                "properties": {}
                             },
-                            "example": {
-                                "id": ""
-                            }
+                            "example": {}
                         }
                     }
                 }

@@ -61,7 +61,7 @@ namespace App\Http\Controllers\Annotations ;
 
 
  * @OA\GET(
- *     path="/api/ressource_Détail/{id}",
+ *     path="/api/ressource/{id}",
  *     summary="voire les details d'un ressource",
  *     description="",
  *         security={
@@ -74,17 +74,6 @@ namespace App\Http\Controllers\Annotations ;
  * ),
  *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
  * ),
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\MediaType(
- *             mediaType="multipart/form-data",
- *             @OA\Schema(
- *                 type="object",
- *                 properties={
- *                 },
- *             ),
- *         ),
- *     ),
  *     tags={"gestion ressource"},
 *),
 
