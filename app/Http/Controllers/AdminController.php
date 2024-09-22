@@ -84,4 +84,5 @@ class AdminController extends Controller
             $user->save();
             return response()->json(['message'=> 'Utilisateur desactive',200]);
         } 
+     
 }

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('libelle');
             $table->string('image');
             $table->text('description');
-            $table->date('date');
             $table->string('lien')->nullable();
             $table->string('statut')->nullable();
             $table->timestamps();

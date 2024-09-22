@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         
         User::factory()->count(10)->create();
         $this->call(CategorieProduitSeeder::class);
+        $this->call(ProducteursTableSeeder::class);
         $this->call(ProduitSeeder::class);
         $this->call(CategorieRessourceSeeder::class);
         $this->call(RessourceSeeder::class);
@@ -26,5 +27,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CommentaireSeeder::class);
         $this->call(EvenementSeeder::class);
         $this->call(ArticleSeeder::class);
+        
     }
 }

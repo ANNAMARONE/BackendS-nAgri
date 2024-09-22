@@ -58,6 +58,7 @@ class PanierController extends Controller
 // Exemple de fonction pour ajouter un produit au panier
 public function ajouterProduitAuPanier(Request $request)
 {
+    
     $request->validate([
         'produit_id' => 'required|exists:produits,id',
         'quantite' => 'required|integer|min:1',
@@ -66,7 +67,7 @@ public function ajouterProduitAuPanier(Request $request)
 
     $produitId = $request->input('produit_id');
     $quantite = $request->input('quantite');
-    $reference = $request->input('reference');
+    $reference = $request->input('reference') ?? 'REF-' . strtoupper(uniqid());
 
     \DB::beginTransaction();
 
@@ -87,42 +88,24 @@ public function ajouterProduitAuPanier(Request $request)
         $montantTotalProduit = $prixUnitaire * $quantite;
 
         // Récupérer ou créer le panier en cours pour l'utilisateur
-        $panier = Panier::where('user_id', $request->user()->id)
-                        ->where('etat_commande', 'en cours')
-                        ->first();
-
-        if (!$panier) {
-            // Créer un nouveau panier si aucun n'existe
-            $panier = Panier::create([
-                'user_id' => $request->user()->id,
-                'etat_commande' => 'en cours',
-                'montant_total' => 0,
-                'produit_id' => $produitId,
-                'quantite' => $quantite,
-                'prix_unitaire' => $prixUnitaire,
-                'reference' => $reference
-            ]);
-        }
+        $panier = Panier::firstOrCreate(
+            ['user_id' => $request->user()->id, 'etat_commande' => 'en cours'],
+            ['reference' => 'REF-' . strtoupper(uniqid()), 'montant_total' => 0]
+        );
 
         // Vérifier si le produit est déjà dans le panier
-        $existingProduct = Panier::where('user_id', $request->user()->id)
-                                 ->where('produit_id', $produitId)
-                                 ->where('etat_commande', 'en cours')
-                                 ->first();
+        $existingProduct = $panier->produits()->where('produit_id', $produitId)->first();
 
         if ($existingProduct) {
             // Mettre à jour la quantité et le prix si le produit est déjà dans le panier
-            $existingProduct->quantite += $quantite;
-            $existingProduct->montant_total += $montantTotalProduit;
-            $existingProduct->save();
+            $existingProduct->pivot->quantite += $quantite;
+            $existingProduct->pivot->montant_total += $montantTotalProduit;
+            $existingProduct->pivot->save();
         } else {
             // Ajouter le produit au panier
-            Panier::create([
-                'user_id' => $request->user()->id,
-                'produit_id' => $produitId,
+            $panier->produits()->attach($produitId, [
                 'quantite' => $quantite,
                 'prix_unitaire' => $prixUnitaire,
-                'etat_commande' => 'en cours',
                 'montant_total' => $montantTotalProduit,
                 'reference' => $reference
             ]);
@@ -144,94 +127,63 @@ public function ajouterProduitAuPanier(Request $request)
 
 
 
-//calculer le montant totale des produit du panier
-public function calculerMontantTotalProduit(Request $request){
-    $userId=Auth::id();
-    $panier=Panier::where('user_id', $userId)
-   ->where('etat_commande', 'en cours')
-   ->get();
-   $montantTotal=$panier->sum('montant_total');
-   return response()->json([
-    'montant_total'=>$montantTotal
-], 200);
-}
-public function validerTousLesPaniers(Request $request)
+//valider une commande
+public function validerCommande(Request $request)
+    {
+        $panier = Panier::where('user_id', $request->user()->id)
+                        ->where('etat_commande', 'en cours')
+                        ->first();
+
+        if (!$panier) {
+            return response()->json(['error' => 'Panier non trouvé.'], 404);
+        }
+
+        \DB::beginTransaction();
+
+        try {
+            $panier->validerCommande();
+            \DB::commit();
+
+            return response()->json(['success' => 'Commande validée avec succès.'], 200);
+        } catch (\Exception $e) {
+            \DB::rollBack();
+
+            return response()->json(['error' => 'Une erreur est survenue lors de la validation de la commande : ' . $e->getMessage()], 500);
+        }
+    }
+
+
+//Expredier une commande 
+
+    public function expedierCommande(Request $request)
+    {
+        $panier = Panier::where('user_id', $request->user()->id)
+                        ->where('etat_commande', 'en cours')
+                        ->first();
+
+        if (!$panier) {
+            return response()->json(['error' => 'Commande non trouvée ou déjà expédiée.'], 404);
+        }
+
+        \DB::beginTransaction();
+
+        try {
+            $panier->expedierCommande();
+            \DB::commit();
+
+            return response()->json(['success' => 'Commande expédiée avec succès.'], 200);
+        } catch (\Exception $e) {
+            \DB::rollBack();
+
+            return response()->json(['error' => 'Une erreur est survenue lors de l\'expédition de la commande : ' . $e->getMessage()], 500);
+        }
+    }
+
+
+//supprimer un produit au panier
+public function supprimerProduit(Request $request, $id)
 {
-    if (!$request->user()) {
-        return response()->json(['error' => 'Utilisateur non authentifié'], 401);
-    }
-
-    $userId = $request->user()->id;
-    // Récupérer tous les paniers en cours de l'utilisateur
-    $paniers = Panier::where('user_id', $userId)
-                     ->where('etat_commande', 'en cours')
-                     ->get();
-
-    if ($paniers->isEmpty()) {
-        return response()->json(['error' => 'Aucun panier en cours trouvé.'], 404);
-    }
-
-    foreach ($paniers as $panier) {
-        $panier->etat_commande = 'validée';
-        $panier->save();
-    }
-
-    return response()->json(['success' => 'Tous les paniers ont été validés avec succès.'], 200);
-}
-
-
-public function expedierPanier(Request $request){
-    $userId=Auth::id();
-    $panier=Panier::where("user_id", $userId)
-    ->where('etat_commande', 'validée')
-    ->get();
-    if($panier->isEmpty()){
-        return response()->json(['error'=> 'Aucun panier validé trouvé'],404);
-    }
-    foreach($panier as $item){
-        $item->etat_commande= 'expédiée';
-        $item->save();
-    }
-    return response()->json(['success'=> 'panier expédié avec succés.'], 200);
-}
-public function supprimerProduit(Request $request, $panierId, $produitId)
-{
-    if (!$request->user()) {
-        return response()->json(['error' => 'Utilisateur non authentifié'], 401);
-    }
-
-    // Trouver le panier avec l'ID donné
-    $panier = Panier::where('id', $panierId)
-                    ->where('user_id', $request->user()->id)
-                    ->where('etat_commande', 'en cours') 
-                    ->first();
-
-    if (!$panier) {
-        return response()->json(['error' => 'Panier non trouvé.'], 404);
-    }
-
-    // Vérifier si le produit est dans le panier
-    $produit = $panier->produit; 
-
-    if (!$produit || $produit->id != $produitId) {
-        return response()->json(['error' => 'Produit non trouvé dans le panier.'], 404);
-    }
-
-    // Supprimer le produit du panier
-    $panier->delete(); 
-
-    return response()->json(['success' => 'Produit supprimé du panier avec succès.'], 200);
-}
-
-   
-public function update(Request $request, $panierId)
-{
-    $request->validate([
-        'quantite' => 'required|integer',
-    ]);
-
-    $panier = Panier::where('id', $panierId)
-                    ->where('user_id', Auth::id())
+    $panier = Panier::where('user_id', $request->user()->id)
                     ->where('etat_commande', 'en cours')
                     ->first();
 
@@ -239,35 +191,67 @@ public function update(Request $request, $panierId)
         return response()->json(['error' => 'Panier non trouvé.'], 404);
     }
 
-    $panier->quantite = $request->input('quantite');
-    $panier->montant_total = $panier->quantite * $panier->prix_unitaire;
-    $panier->save();
+    \DB::beginTransaction();
 
-    return response()->json(['success' => 'Panier mis à jour avec succès.'], 200);
+    try {
+        $panier->supprimerProduit($id);
+        \DB::commit();
+
+        return response()->json(['success' => 'Produit supprimé du panier avec succès.'], 200);
+    } catch (\Exception $e) {
+        \DB::rollBack();
+
+        return response()->json(['error' => 'Une erreur est survenue lors de la suppression du produit du panier : ' . $e->getMessage()], 500);
+    }
 }
 
-public function afficherCommandes(Request $request)
+   //modifier un panier
+   public function update(Request $request, $id)
+   {
+       $request->validate([
+           'quantite' => 'required|integer',
+       ]);
+   
+       $panier = Panier::where('user_id', $request->user()->id)
+                       ->where('etat_commande', 'en cours')
+                       ->first();
+   
+       if (!$panier) {
+           return response()->json(['error' => 'Panier non trouvé.'], 404);
+       }
+   
+       \DB::beginTransaction();
+   
+       try {
+           // Appel de la méthode modifierProduit avec la nouvelle quantité
+           $panier->modifierProduit($id, $request->input('quantite'));
+           \DB::commit();
+   
+           return response()->json(['success' => 'Panier modifié avec succès.'], 200);
+       } catch (\Exception $e) {
+           \DB::rollBack();
+   
+           return response()->json(['error' => 'Une erreur est survenue lors de la modification du panier : ' . $e->getMessage()], 500);
+       }
+   }
+   
+
+public function afficherPanier(Request $request)
 {
-    // Vérifier si l'utilisateur est authentifié
-    if (!$request->user()) {
-        return response()->json(['error' => 'Utilisateur non authentifié'], 401);
+    $panier = Panier::where('user_id', $request->user()->id)
+                    ->where('etat_commande', 'en cours')
+                    ->first();
+
+    if (!$panier) {
+        return response()->json(['error' => 'Panier non trouvé.'], 404);
     }
 
-    $userId = $request->user()->id;
+    $montantTotal = $panier->calculerMontantTotal();
 
-    // Récupérer toutes les commandes de l'utilisateur (commandes validées ou expédiées)
-    $commandes = Panier::where('user_id', $userId)
-                       ->whereIn('etat_commande', ['validée', 'expédiée'])
-                       ->with('produits') 
-                       ->get();
-
-    // Vérifier si l'utilisateur a des commandes
-    if ($commandes->isEmpty()) {
-        return response()->json(['message' => 'Aucune commande trouvée.'], 404);
-    }
-
-    // Retourner les commandes sous forme de réponse JSON
-    return response()->json($commandes);
+    return response()->json([
+        'panier' => $panier,
+        'montant_total' => $montantTotal
+    ], 200);
 }
 
 

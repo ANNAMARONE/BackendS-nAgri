@@ -44,6 +44,10 @@ return [
             'driver' => 'jwt',
             'provider' => 'users',
         ],
+        'producteur' => [
+        'driver' => 'session', // Utilisez 'session' pour une application web ou 'token' pour une API
+        'provider' => 'producteurs',
+    ],
     ], 
 
     /*
@@ -68,7 +72,10 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
-
+        'producteurs' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Producteur::class, // Assurez-vous que ce chemin est correct
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

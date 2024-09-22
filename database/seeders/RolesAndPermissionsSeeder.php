@@ -20,6 +20,7 @@ class RolesAndPermissionsSeeder extends Seeder
            // Créer des permissions
            Permission::create(['name' => 'acherter_produit']);
            Permission::create(['name' => 'voire_panier']);
+           Permission::create(['name'=> 'faire_un_payement']);
            Permission::create(['name'=> 'consulter_catalogue']);
            Permission::create(['name' => 'valider_commande']);
            Permission::create(['name' => 'faire_paiement']);
@@ -48,7 +49,8 @@ class RolesAndPermissionsSeeder extends Seeder
            $role->givePermissionTo('voire_panier');
             $role->givePermissionTo('consulter_catalogue');
             $role->givePermissionTo('gestion_profil');
-   
+            $role->givePermissionTo('faire_un_payement');
+            $role->givePermissionTo('voire_paiment');
            $role = Role::create(['name' => 'producteur']);
            $role->givePermissionTo('gestion_produit');
            $role->givePermissionTo('gestion_commande');
@@ -61,6 +63,7 @@ class RolesAndPermissionsSeeder extends Seeder
            $role->givePermissionTo('gestion_profil');
    
            $role = Role::create(['name' => 'admin']);
+           
            $role->givePermissionTo(Permission::all());
        }
     

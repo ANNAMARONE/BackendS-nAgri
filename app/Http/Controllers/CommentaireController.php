@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 
 class CommentaireController extends Controller
 {
-    public function store(Request $request, $forumId)
+    public function store(Request $request, $id)
 {
     $validator = Validator::make($request->all(), [
         "description" => "required|string",
@@ -24,7 +24,7 @@ class CommentaireController extends Controller
     }
 
     $commentaires = Commentaire::create([
-        "forum_id" => $forumId,
+        "forum_id" => $id,
         "description" => $request->description,
         "user_id" => Auth::id(),
     ]);

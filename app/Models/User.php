@@ -13,20 +13,21 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
     use HasRoles;
-function secteur(){
-    return $this->belongsTo(secteur::class);
-}
 function produits(){
-    return $this->hasMany(produit::class);
+    return $this->hasMany(produit::class,'user_id');
 }
 public function commentairs(){
-    return $this->hasMany(comentaire::class);
+    return $this->hasMany(Commentaire::class);
 }
 public function forums(){
     return $this->hasMany(forum::class);
 }
 public function commandes(){
     return $this->hasMany(commande::class);
+}
+public function producteur()
+{
+    return $this->hasOne(Producteur::class);
 }
 
     /**

@@ -6,11 +6,16 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "cinetpay/cinetpay-php": "^1.9",
+        "darkaonline/l5-swagger": "^8.6",
+        "guzzlehttp/guzzle": "^7.9",
+        "laravel-notification-channels/twilio": "^3.4",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "sadiqsalau/laravel-otp": "^1.0",
         "spatie/laravel-permission": "^6.9",
+        "twilio/sdk": "^7.16",
         "tymon/jwt-auth": "^2.1"
     },
     "require-dev": {
@@ -66,4 +71,5 @@
     },
     "minimum-stability": "stable",
     "prefer-stable": true
+    
 }

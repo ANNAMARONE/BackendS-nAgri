@@ -67,16 +67,56 @@ class CategorieRessourceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatecategorieRessourceRequest $request, categorieRessource $categorieRessource)
+    public function update(Request $request, $id)
     {
-        //
+        // Valider les données entrantes
+        $validatedData = $request->validate([
+            'libelle' => 'required|string|max:255', 
+        ]);
+    
+        // Récupérer la catégorie de produit spécifique
+        $categorieProduit = categorieRessource::find($id);
+    
+        // Vérifier si la catégorie existe
+        if (!$categorieProduit) {
+            return response()->json([
+                'message' => 'Catégorie non trouvée.'
+            ], 404);
+        }
+    
+        // Mettre à jour la catégorie avec les nouvelles données
+        $categorieProduit->update($validatedData);
+    
+        // Retourner une réponse JSON avec un message de succès
+        return response()->json([
+            'message' => 'Catégorie mise à jour avec succès.',
+            'catégorie' => $categorieProduit
+        ], 200);
     }
+    
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(categorieRessource $categorieRessource)
+    public function destroy(Request $request, $id)
     {
-        //
+      // Récupérer la catégorie de produit spécifique
+      $categorieProduit = categorieRessource::find($id);
+    
+      // Vérifier si la catégorie existe
+      if (!$categorieProduit) {
+          return response()->json([
+              'message' => 'Catégorie non trouvée.'
+          ], 404);
+      }
+  
+      // Supprimer la catégorie
+      $categorieProduit->delete();
+  
+      // Retourner une réponse JSON avec un message de succès
+      return response()->json([
+          'message' => 'Catégorie supprimée avec succès.',
+          'catégorie' => $categorieProduit
+      ], 200);
     }
 }

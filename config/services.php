@@ -13,6 +13,11 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
+// config/services.php
+
+'smsmode' => [
+    'api_key' => env('SMSMODE_API_KEY'),
+],
 
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),

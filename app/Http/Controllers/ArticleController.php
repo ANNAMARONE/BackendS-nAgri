@@ -44,7 +44,6 @@ class ArticleController extends Controller
             'libelle' => 'required|string|max:255',
             'image' => 'required|mimes:jpeg,jpg,png|max:2048',
             'description' => 'required|string',
-            'date' => 'required|date|after_or_equal:today',
             'lien' => 'required|string|max:255',
             'statut' => 'required|string|min:1',
         ]);
@@ -110,7 +109,6 @@ class ArticleController extends Controller
             'libelle' => 'required|string|max:255',
             'image' => 'sometimes|mimes:jpeg,jpg,png|max:2048',
             'description' => 'required|string',
-            'date' => 'required|date|after_or_equal:today',
             'lien' => 'required|string|max:255',
             'statut' => 'required|string|min:1', 
         ]);

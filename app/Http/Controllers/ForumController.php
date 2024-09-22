@@ -68,9 +68,7 @@ class ForumController extends Controller
      */
     public function show(Request $request,$id)
     {
-        if(!$request->user()){
-            return response()->json(['error'=>'veuillez vous connecter'] ,401);
-        }
+      
         $forum=forum::findOrfail($id);
         if(!$forum){
             return response()->json(["message"=>"forum non trouver"] ,404);

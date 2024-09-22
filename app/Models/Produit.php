@@ -14,13 +14,23 @@ class Produit extends Model
     function user(){
         return $this->belongsTo(User::class);
     }
+  // Dans le modèle Produit
+  public function producteur()
+  {
+      return $this->belongsTo(User::class, 'producteur_id'); // Assurez-vous que 'producteur_id' est la bonne clé étrangère
+  }
+  
+
+    
     function categorie(){
         return $this->belongsTo(categorieProduit::class);
     }
     
     public function paniers()
     {
-        return $this->hasMany(Panier::class);
+        return $this->belongsToMany(Panier::class, 'panier_produit')
+                    ->withPivot('quantite', 'prix_unitaire', 'montant_total', 'reference')
+                    ->withTimestamps();
     }
 
 }

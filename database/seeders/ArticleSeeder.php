@@ -18,7 +18,6 @@ class ArticleSeeder extends Seeder
                 'libelle' => 'Article ' . $i,
                 'image' => 'image' . $i . '.jpg',
                 'description' => 'Ceci est la description de l\'article ' . $i . '.',
-                'date' => now(),
                 'lien' => 'https://example.com/article' . $i,
                 'statut' => $i % 2 == 0 ? 'publié' : 'brouillon',
                 'created_at' => now(),
