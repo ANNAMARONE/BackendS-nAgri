@@ -27,7 +27,7 @@ class ProduitSeeder extends Seeder
                 'quantite' => rand(1, 100),
                 'prix' => rand(10, 1000),
                 'statut' => 'en stock',
-                'user_id' => 1,
+                'user_id' =>19,
                 'categorie_produit_id' => rand(1, 5),
                
             ];

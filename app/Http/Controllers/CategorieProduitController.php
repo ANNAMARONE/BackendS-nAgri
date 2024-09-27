@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\StorecategorieProduitRequest;
 use App\Http\Requests\UpdatecategorieProduitRequest;
-
+use Illuminate\Support\Facades\Storage;
 class CategorieProduitController extends Controller
 {
     /**
@@ -36,29 +36,32 @@ class CategorieProduitController extends Controller
      */
     public function store(Request $request)
     {
-        // Créer une nouvelle instance de CategorieProduit avec les données validées
         $validator = Validator::make($request->all(), [
-            "libelle"=> "required|string",
+            'libelle' => 'required|string|max:255',
+            "image" => "required|mimes:jpeg,jpg,png|max:2048"
         ]);
-    
-        // Retourner une réponse JSON avec le statut 201 pour indiquer la création réussie
         if ($validator->fails()) {
             return response()->json([
                 'errors' => $validator->errors()
             ], 422);
         }
-        $categorieProduit= new CategorieProduit();
-
-        $categorieProduit->fill($request->only(['libelle']));
-
-        $categorieProduit->save();
+        $categorie = new categorieProduit();
+        $categorie->fill($request->only(['libelle', 'description', 'quantite', 'prix', 'statut','categorie_produit_id']));
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+            $path = $image->storeAs('images', $filename, 'public');
+            $categorie->image = $path; 
+    
+        $categorie->save();
+    
         return response()->json([
-            'message' => 'catégorie ajouté avec succès',
-            'article' => $categorieProduit
-        ], 201);
+            'message' => 'Catégorie créée avec succès!',
+            'article' => $categorie
+        ], 200);
     
     }
-    
+    }
 
     /**
      * Display the specified resource.
@@ -81,31 +84,48 @@ class CategorieProduitController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Récupérer la catégorie de produit spécifique
+      $categorieProduit = CategorieProduit::find($id);
         // Valider les données entrantes
-        $validatedData = $request->validate([
+        $validator = Validator::make($request->all(), [
             'libelle' => 'required|string|max:255', 
+            "image" => "required|mimes:jpeg,jpg,png|max:2048",
         ]);
     
-        // Récupérer la catégorie de produit spécifique
-        $categorieProduit = CategorieProduit::find($id);
-    
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
         // Vérifier si la catégorie existe
         if (!$categorieProduit) {
             return response()->json([
                 'message' => 'Catégorie non trouvée.'
             ], 404);
         }
+        $categorieProduit->fill($request->except('image'));
     
+        if ($request->hasFile('image')) {
+            // Supprimer l'ancienne image si elle existe
+            if ($categorieProduit->image && Storage::disk('public')->exists('images/' . $categorieProduit->image)) {
+                Storage::disk('public')->delete('images/' . $categorieProduit->image);
+            }
+            
+            $image = $request->file('image');
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+            $path = $image->storeAs('images', $filename, 'public');
+            $categorieProduit->image = $filename;
         // Mettre à jour la catégorie avec les nouvelles données
-        $categorieProduit->update($validatedData);
-    
+        $categorieProduit->save();
         // Retourner une réponse JSON avec un message de succès
         return response()->json([
             'message' => 'Catégorie mise à jour avec succès.',
             'catégorie' => $categorieProduit
         ], 200);
     }
-    
+}
 
     /**
      * Remove the specified resource from storage.

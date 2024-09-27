@@ -19,18 +19,19 @@ class Produit extends Model
   {
       return $this->belongsTo(User::class, 'producteur_id'); // Assurez-vous que 'producteur_id' est la bonne clé étrangère
   }
-  
 
     
     function categorie(){
         return $this->belongsTo(categorieProduit::class);
     }
     
-    public function paniers()
+    public function commandes()
     {
-        return $this->belongsToMany(Panier::class, 'panier_produit')
+        return $this->belongsToMany(Commande::class)
                     ->withPivot('quantite', 'prix_unitaire', 'montant_total', 'reference')
                     ->withTimestamps();
     }
+    
+    
 
 }

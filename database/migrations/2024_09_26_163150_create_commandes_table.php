@@ -11,20 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('paniers', function (Blueprint $table) {
+        Schema::create('commandes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('etat_commande')->default('en cours');
+            $table->integer('quantite')->default(1);
             $table->decimal('montant_total', 10, 2)->default(0);
+            $table->json('produits'); // Colonne JSON pour stocker les détails des produits
             $table->timestamps();
         });
     }
-
+    
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('paniers');
+        Schema::dropIfExists('commandes');
     }
 };

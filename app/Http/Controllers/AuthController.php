@@ -98,14 +98,24 @@ $validator->sometimes('region', 'required|in:Dakar,Diourbel,Fatick,Kaffrine,Kaol
         );
     }
     
-    public function login() {
-       $credentials=request([
-        'email','password']);
-        if(!$token=auth('api')->attempt($credentials)) {
-            return response()->json(['error'=>'unauthorized'] ,401);
+    public function login()
+    {
+        $credentials = request(['email', 'password']);
+    
+        if (!$token = auth('api')->attempt($credentials)) {
+            return response()->json(['error' => 'unauthorized'], 401);
         }
-        return $this->respondWithToken($token);
+    
+        // Récupérer l'utilisateur connecté
+        $user = auth('api')->user();
+    
+        
+        return response()->json([
+            'token' => $token,
+            'user' => $user 
+        ]);
     }
+    
     public function me(){
         return response()->json(auth('api')->user());
     }

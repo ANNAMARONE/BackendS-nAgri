@@ -21,14 +21,14 @@ class ProduitController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
       
-        $produit = Produit::orderBy("created_at","desc")->paginate(10);
-        if ($produit->isEmpty()) {
+        $produits = Produit::paginate(10);
+        if ($produits->isEmpty()) {
             return response()->json(['message' => 'Aucune produit trouvée.'], 404);
         }
-        return response()->json($produit,200);
+        return response()->json($produits,200);
     }
 
     /**
@@ -189,4 +189,15 @@ public function AfficheProduitParUser(Request $request){
     return response()->json($produits);
        
     }
+    public function likeProduct($id)
+{
+    $product = Produit::findOrFail($id);
+    $product->increment('likes'); // Incrémente la colonne 'likes'
+    
+    return response()->json([
+        'message' => 'Produit aimé avec succès!',
+        'likes' => $product->likes
+    ]);
+}
+
 }

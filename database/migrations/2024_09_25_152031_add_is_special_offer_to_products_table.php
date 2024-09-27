@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('paniers', function (Blueprint $table) {
-            $table->string('reference')->unique()->nullable();
+        Schema::table('produits', function (Blueprint $table) {
+            //
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('paniers', function (Blueprint $table) {
-            $table->dropColumn('reference');
+        Schema::table('produits', function (Blueprint $table) {
+            //
         });
     }
 };

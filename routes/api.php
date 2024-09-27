@@ -11,6 +11,7 @@ use App\Http\Controllers\PanierController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\CinetPayController;
+use App\Http\Controllers\CommandeController;
 use App\Http\Controllers\ControllerPayement;
 use App\Http\Controllers\EvenementController;
 use App\Http\Controllers\RessourceController;
@@ -32,11 +33,15 @@ Route::group(['middleware'=>'api',
 });
 Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
 
-Route::get('afficher_produit',[ProduitController::class,'index']);
+Route::get('/afficher_produit',[ProduitController::class,'index']);
 Route::get('/détail_produit/{id}', [ProduitController::class,'show']);
 Route::get('/categories/{id}/produits', [ProduitController::class, 'produitParCategorie']);
 Route::get('/CatégorieProduit', [CategorieProduitController::class,'index']);
 Route::get('/catégorieRessouce', [CategorieRessourceController::class,'index']);
+Route::post('/product/{id}/like', [ProduitController::class, 'likeProduct']);
+Route::get('/products/popular', [ProduitController::class, 'getPopularProducts']);
+
+
 //Athentification
 Route::middleware('auth.jwt')->group(function () {
  
@@ -75,19 +80,12 @@ Route::middleware('auth.jwt')->group(function () {
   
      Route::match(['get', 'post'], '/notify_url', [CinetPayController::class, 'notify_url'])->name('notify_url');
      Route::match(['get', 'post'], '/return_url', [CinetPayController::class, 'return_url'])->name('return_url');
-   //gestion panier
-   Route::get('/paniers', [PanierController::class, 'index']);
-   Route::post('/ajouterProduitAuPanier', [PanierController::class, 'ajouterProduitAuPanier']);
-   Route::delete('/panier/produit/{id}', [PanierController::class, 'supprimerProduit'])->name('panier.produit.supprimer');
-   Route::put('/panier/{id}', [PanierController::class, 'update'])->name('panier.update');
-   
-   Route::post('/panier/valider', [PanierController::class, 'validerCommande'])->name('panier.valider');
-   Route::post('/panier/expedier', [PanierController::class, 'expedierCommande'])->name('panier.expedier');
-  Route::get('/commandes', [PanierController::class, 'afficherPanier']);
+ 
 
   
   });
-  
+    //gestion panier
+    Route::post('/commander', [CommandeController::class, 'store']);
   // Routes accessibles uniquement aux producteurs
   Route::middleware(['role:producteur'])->group(function () {
     
