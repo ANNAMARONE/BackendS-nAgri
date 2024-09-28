@@ -49,13 +49,14 @@ Route::middleware('auth.jwt')->group(function () {
 
 
     Route::get('/ressources',[RessourceController::class,'index']);
-    Route::get('/ressource/{id}', [RessourceController::class,'show']);
+    Route::get('/ressources/{id}', [RessourceController::class,'show']);
+    Route::get('/ressources/categorie/{id}', [RessourceController::class,'RessourceCategorie']);
          //gestion evenement
   Route::get('/evenements',[EvenementController::class,'index']);
   
   Route::get('/evenement/{id}', [EvenementController::class,'show']);
       //gestion article
-      Route::get('/article',[ArticleController::class,'index'])->name('articles');
+      Route::get('/articles',[ArticleController::class,'index'])->name('articles');
   
       Route::get('/article/{id}', [ArticleController::class,'show']);
     //gestion des produits
@@ -64,11 +65,26 @@ Route::middleware('auth.jwt')->group(function () {
   Route::post('/modifier_produit/{id}', [ProduitController::class,'update']);
   Route::delete('/supprimer_produit/{id}', [ProduitController::class,'destroy']);
     //gestion forum
-    Route::get('commentaires/{id}', [ForumController::class,'commentaireForum']);
+  
     //gestion commentaire
-    Route::post('ajouter_commentaire/{id}', [CommentaireController::class,'store']);
+    // Route pour récupérer les commentaires d'un forum
+Route::get('/forums/{id}/commentaires', [CommentaireController::class, 'index']);
+
+
+Route::post('/forums/{id}/commentaires', [CommentaireController::class, 'store']);
+
+
+Route::post('/commentaires/{id}/like', [CommentaireController::class, 'addLike']);
+
+
+
+Route::post('/commentaires/{id}/repondre', [CommentaireController::class, 'ReponseCommentaire']);
+
+
+    
     Route::get('/forums',[ForumController::class,'index']);
     Route::post('/ajout_forums', [ForumController::class,'store']);
+    Route::get('/forums/{id}', [ForumController::class, 'commentaireForum']);
     Route::get('/forum/{id}', [ForumController::class, 'show']);
     Route::post('/modifier_forums/{id}', [ForumController::class,'update']);
   });

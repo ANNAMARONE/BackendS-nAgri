@@ -19,7 +19,7 @@ class ArticleController extends Controller
         if (!$request->user()) {
             return response()->json(['error' => 'Veuillez vous connecter.'], 401);
         }
-        $articles = Article::orderBy("created_at","desc")->paginate(10);
+        $articles = Article::orderBy("created_at","desc")->get();
         if ($articles->isEmpty()) {
             return response()->json(['message' => 'Aucune articles trouvée.'], 404);
         }

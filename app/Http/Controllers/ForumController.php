@@ -21,7 +21,7 @@ class ForumController extends Controller
     if(!$request->user()){
         return response()->json(['error'=>'veuillez vous connecter'] ,401);
     }
-    $forum = Forum::orderBy("created_at","desc")->paginate(10);
+    $forum = Forum::orderBy("created_at", "desc")->get();
     if($forum->isEmpty()){
         return response()->json(["error"=> "Aucun forum trouver"] ,404);
     }
@@ -137,19 +137,22 @@ class ForumController extends Controller
      ] ,200);
 
     }
-   public function commentaireForum(Request $request,$id){
-    if(!$request->user()){
-    return response()->json(['error'=>'veuillez vous connecter'] ,401);
-    }
-    $forum=Forum::with('commentaires')->findOrFail($id);
-    if(!$forum){
+    public function commentaireForum(Request $request, $id)
+    {
+        if(!$request->user()){
+            return response()->json(['error' => 'Veuillez vous connecter'], 401);
+        }
+        $forum = Forum::with('commentaires')->find($id);
+        if(!$forum){
+            return response()->json(['message' => 'Forum non trouvé'], 404);
+        }
+    
+        // Retourne le forum et ses commentaires
         return response()->json([
-            'message'=>'commentaire non trouvée',
-            'commentaire'=> $forum
-            ] ,404);
+            'forum' => $forum,
+            'commentaires' => $forum->commentaires
+        ], 200);
     }
-    $commentaire=$forum->commentaires;
-    \Log::info('commentaire associés',$commentaire->toArray());
-    return response()->json([$commentaire]);
-   }
+    
+    
 }

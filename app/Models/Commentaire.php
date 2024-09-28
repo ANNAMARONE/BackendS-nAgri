@@ -15,4 +15,14 @@ class Commentaire extends Model
     public function forum(){
         return $this->belongsTo(forum::class);
     }
+    public function replies()
+    {
+        return $this->hasMany(Commentaire::class, 'parent_id');
+    }
+
+   
+    public function parent()
+    {
+        return $this->belongsTo(Commentaire::class, 'parent_id');
+    }
 }

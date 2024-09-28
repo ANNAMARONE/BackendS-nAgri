@@ -17,15 +17,8 @@ class RessourceController extends Controller
      */
     public function index(Request $request)
     {
-        if (!$request->user()) {
-            return response()->json(['error' => 'Veuillez vous connecter.'], 401);
-        }
-        $ressource=ressource::orderBy("created_at","desc")->paginate(10);
-
-        if ($ressource->isEmpty()) {
-            return response()->json(['message' => 'Aucune ressource trouvée.'], 404);
-        }
-        return response()->json($ressource);
+        $ressources = Ressource::orderBy('created_at', 'desc')->paginate(10);
+        return response()->json($ressources, 200);
     }
 
     /**
@@ -93,20 +86,17 @@ class RessourceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request,$id)
+    public function show($id)
     {
-        if (!$request->user()) {
-            return response()->json(['error' => 'Veuillez vous connecter.'], 401);
+        $ressource = Ressource::find($id);
+        
+        if (!$ressource) {
+            return response()->json(['message' => 'Ressource non trouvée.'], 404);
         }
-        $ressource = Ressource::findOrFail($id);
-        if(!$ressource){
-            return response()->json(['error'=> 'ressource non trouvé'], 404);           
-        }
-        return response()->json([
-            'message'=> 'ressouce recuperer avec succés',
-            'ressouce'=> $ressource
-        ],200);
+    
+        return response()->json($ressource, 200);
     }
+    
 
     /**
      * Show the form for editing the specified resource.
@@ -202,17 +192,17 @@ class RessourceController extends Controller
             'article' =>$ressource
         ], 200);  
     }
-public function RessourceCategorie($id){
-    $categorie=categorieRessource::with('ressoures')->findOrFail($id);
-    if(!$categorie){
-        return response()->json(['message'=>'catégorie non trouvée'] ,404);
+    public function RessourceCategorie($id, Request $request)
+    {
+        // Filtrer les ressources par catégorie avec pagination
+        $ressources = Ressource::where('categorie_ressource_id', $id)->paginate(10); // 10 ressources par page
+        
+        // Vérifier si des ressources sont trouvées
+        if ($ressources->isEmpty()) {
+            return response()->json(['message' => 'Aucune ressource trouvée pour cette catégorie.'], 404);
+        }
+    
+        return response()->json($ressources, 200);
     }
-    // Vérifiez les ressources associés
-$ressources = $categorie->resssources;
-
-// Ajoutez des logs pour déboguer
-   \Log::info('ressurces  associés :', $ressources->toArray());
-
-return response()->json($ressources);
-}
+    
 }

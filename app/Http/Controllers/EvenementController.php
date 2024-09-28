@@ -18,7 +18,7 @@ class EvenementController extends Controller
         if (!$request->user()) {
             return response()->json(['error' => 'Veuillez vous connecter.'], 401);
         }
-        $evenement=evenement::orderBy("created_at","desc")->paginate(10);
+        $evenement=evenement::orderBy("created_at","desc")->get();
 
         if ($evenement->isEmpty()) {
             return response()->json(['message' => 'Aucune evenement trouvée.'], 404);
