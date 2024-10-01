@@ -46,7 +46,7 @@ class CategorieProduitController extends Controller
             ], 422);
         }
         $categorie = new categorieProduit();
-        $categorie->fill($request->only(['libelle', 'description', 'quantite', 'prix', 'statut','categorie_produit_id']));
+        $categorie->fill($request->only(['libelle','image']));
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = time() . '.' . $image->getClientOriginalExtension();
@@ -66,11 +66,21 @@ class CategorieProduitController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(categorieProduit $categorieProduit)
+    public function show($id)
     {
-        //
+        $categorie = CategorieProduit::find($id);
+    
+        
+        if (!$categorie) {
+            return response()->json([
+                'message' => 'Catégorie non trouvée.'
+            ], 404);
+        }
+    
+        
+        return response()->json($categorie, 200);
     }
-
+    
     /**
      * Show the form for editing the specified resource.
      */

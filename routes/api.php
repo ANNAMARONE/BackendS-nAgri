@@ -21,6 +21,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\CommentaireController;
 use App\Http\Controllers\CategorieProduitController;
 use App\Http\Controllers\CategorieRessourceController;
+use App\Http\Controllers\UserController;
 
 Route::group(['middleware'=>'api',
 'prefix'=> 'auth',
@@ -29,7 +30,8 @@ Route::group(['middleware'=>'api',
     Route::post('/login',[AuthController::class,'login'])->name('login');
     Route::post('/logout',[AuthController::class,'logout'])->middleware('auth:api')->name('logout');
     Route::post('/refresh',[AuthController::class,'refresh'])->middleware('auth:api')->name('refresh');
-    Route::post('/me',[AuthController::class,'me'])->middleware('auth:api')->name('me');
+    Route::get('/me',[AuthController::class,'me'])->middleware('auth:api')->name('me');
+
 });
 Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
 
@@ -46,7 +48,8 @@ Route::get('/products/popular', [ProduitController::class, 'getPopularProducts']
 Route::middleware('auth.jwt')->group(function () {
  
   Route::middleware(['role:admin|producteur'])->group(function () {
-
+    Route::get('/utilisateurs', [UserController::class, 'index']);
+    Route::get('/utilisateurs/{id}', [UserController::class, 'show']);
 
     Route::get('/ressources',[RessourceController::class,'index']);
     Route::get('/ressources/{id}', [RessourceController::class,'show']);
@@ -154,7 +157,7 @@ Route::post('/commentaires/{id}/repondre', [CommentaireController::class, 'Repon
 
   Route::post('/modifier_categorieProduit/{id}', [CategorieProduitController::class,'update']);
 Route::delete('/supprimer_categorieProduit/{id}', [CategorieProduitController::class,'destroy']);
-
+Route::get('/detail_categorieProduit/{id}', [CategorieProduitController::class,'show']);
 Route::post('/modifier_categorieRessource/{id}', [CategorieRessourceController::class,'update']);
 Route::delete('/supprimer_categorieRessource/{id}', [CategorieRessourceController::class,'destroy']);
 

@@ -15,10 +15,7 @@ class Producteur extends Authenticatable
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    public function payements()
-    {
-        return $this->hasMany(Payement::class, 'producteur_id'); // Clé étrangère dans la table payements
-    }
+ 
     public function produits()
     {
         

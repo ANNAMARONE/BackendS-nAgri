@@ -150,7 +150,7 @@ class EvenementController extends Controller
         if (!$request->user()) {
             return response()->json(['error' => 'Veuillez vous connecter.'], 401);
         }
-         $evenement=evenement::findOrFail($id);
+         $evenement=evenement::find($id);
 
          if (!$evenement) {
             return response()->json(['error' => 'Événement non trouvé.'], 404);

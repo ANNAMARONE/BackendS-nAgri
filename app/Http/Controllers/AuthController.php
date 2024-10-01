@@ -9,12 +9,14 @@ use App\services\SmsService;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use App\Notifications\OTPNotification;
 use Twilio\Rest\Client as TwilioClient;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Http\Request; // Correct import for Request
-use Illuminate\Support\Facades\File;
+
 class AuthController extends Controller
 {
    
@@ -212,5 +214,10 @@ $validator->sometimes('region', 'required|in:Dakar,Diourbel,Fatick,Kaffrine,Kaol
         return response()->json(['message' => 'Profil mis à jour avec succès', 'user' => $user], 200);
     }
 
-
+    public function profile(Request $request)
+    {
+        return response()->json([
+            'user' => Auth::user()
+        ]);
+    }
 }

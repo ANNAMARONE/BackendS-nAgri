@@ -127,7 +127,7 @@ public function AfficheProduitParUser(Request $request){
         
         $validator = Validator::make($request->all(), [
             "libelle" => "required|string|max:255",
-            "image" => "nullable|mimes:jpeg,jpg,png|max:2048", // Nullable si on n'a pas toujours besoin d'une nouvelle image
+            "image" => "nullable|mimes:jpeg,jpg,png|max:2048", 
             "description" => "required|string",
             "quantite" => "required|integer",
             "prix" => "required|integer",
