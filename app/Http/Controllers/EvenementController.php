@@ -15,9 +15,7 @@ class EvenementController extends Controller
      */
     public function index(Request $request)
     {
-        if (!$request->user()) {
-            return response()->json(['error' => 'Veuillez vous connecter.'], 401);
-        }
+    
         $evenement=evenement::orderBy("created_at","desc")->get();
 
         if ($evenement->isEmpty()) {

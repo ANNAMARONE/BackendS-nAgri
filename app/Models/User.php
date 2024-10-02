@@ -22,9 +22,11 @@ public function commentairs(){
 public function forums(){
     return $this->hasMany(forum::class);
 }
-public function commandes(){
-    return $this->hasMany(commande::class);
+public function commandes()
+{
+    return $this->hasMany(Commande::class);
 }
+
 public function producteur()
 {
     return $this->hasOne(Producteur::class);

@@ -33,6 +33,14 @@ Route::group(['middleware'=>'api',
     Route::get('/me',[AuthController::class,'me'])->middleware('auth:api')->name('me');
 
 });
+
+
+Route::get('/evenements',[EvenementController::class,'index']);
+  
+Route::get('/evenement/{id}', [EvenementController::class,'show']);
+    //gestion article
+Route::get('/articles',[ArticleController::class,'index'])->name('articles');
+ Route::get('/article/{id}', [ArticleController::class,'show']);
 Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
 
 Route::get('/afficher_produit',[ProduitController::class,'index']);
@@ -42,8 +50,12 @@ Route::get('/CatégorieProduit', [CategorieProduitController::class,'index']);
 Route::get('/catégorieRessouce', [CategorieRessourceController::class,'index']);
 Route::post('/product/{id}/like', [ProduitController::class, 'likeProduct']);
 Route::get('/products/popular', [ProduitController::class, 'getPopularProducts']);
-
-
+Route::get('/ressources',[RessourceController::class,'index']);
+Route::get('/ressources/{id}', [RessourceController::class,'show']);
+Route::get('/ressources/categorie/{id}', [RessourceController::class,'RessourceCategorie']);
+Route::get('/forums',[ForumController::class,'index']);
+Route::get('/forums/{id}/commentaires', [CommentaireController::class, 'index']);
+Route::post('/commentaires/{id}/like', [CommentaireController::class, 'addLike']);
 //Athentification
 Route::middleware('auth.jwt')->group(function () {
  
@@ -51,17 +63,9 @@ Route::middleware('auth.jwt')->group(function () {
     Route::get('/utilisateurs', [UserController::class, 'index']);
     Route::get('/utilisateurs/{id}', [UserController::class, 'show']);
 
-    Route::get('/ressources',[RessourceController::class,'index']);
-    Route::get('/ressources/{id}', [RessourceController::class,'show']);
-    Route::get('/ressources/categorie/{id}', [RessourceController::class,'RessourceCategorie']);
+ 
          //gestion evenement
-  Route::get('/evenements',[EvenementController::class,'index']);
-  
-  Route::get('/evenement/{id}', [EvenementController::class,'show']);
-      //gestion article
-      Route::get('/articles',[ArticleController::class,'index'])->name('articles');
-  
-      Route::get('/article/{id}', [ArticleController::class,'show']);
+ 
     //gestion des produits
   Route::get('afficher_produitParUser',[ProduitController::class,'AfficheProduitParUser']);
   Route::post('/Ajouter_produits', [ProduitController::class,'store']);
@@ -71,13 +75,13 @@ Route::middleware('auth.jwt')->group(function () {
   
     //gestion commentaire
     // Route pour récupérer les commentaires d'un forum
-Route::get('/forums/{id}/commentaires', [CommentaireController::class, 'index']);
+
 
 
 Route::post('/forums/{id}/commentaires', [CommentaireController::class, 'store']);
 
 
-Route::post('/commentaires/{id}/like', [CommentaireController::class, 'addLike']);
+
 
 
 
@@ -85,7 +89,7 @@ Route::post('/commentaires/{id}/repondre', [CommentaireController::class, 'Repon
 
 
     
-    Route::get('/forums',[ForumController::class,'index']);
+   
     Route::post('/ajout_forums', [ForumController::class,'store']);
     Route::get('/forums/{id}', [ForumController::class, 'commentaireForum']);
     Route::get('/forum/{id}', [ForumController::class, 'show']);
@@ -105,6 +109,8 @@ Route::post('/commentaires/{id}/repondre', [CommentaireController::class, 'Repon
   });
     //gestion panier
     Route::post('/commander', [CommandeController::class, 'store']);
+    Route::get('/commandes', [CommandeController::class, 'AfficherCommandes']);
+   
   // Routes accessibles uniquement aux producteurs
   Route::middleware(['role:producteur'])->group(function () {
     

@@ -14,19 +14,25 @@ return new class extends Migration
         Schema::create('commandes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('etat_commande')->default('en cours');
-            $table->integer('quantite')->default(1);
-            $table->decimal('montant_total', 10, 2)->default(0);
-            $table->json('produits'); // Colonne JSON pour stocker les détails des produits
+            $table->decimal('montant_total', 10, 2);
+            $table->timestamps();
+        });
+        
+        Schema::create('commande_produit', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('commande_id')->constrained()->onDelete('cascade');
+            $table->foreignId('produit_id')->constrained()->onDelete('cascade');
+            $table->integer('quantite');
             $table->timestamps();
         });
     }
-    
+
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
+        Schema::dropIfExists('commande_produit');
         Schema::dropIfExists('commandes');
     }
 };

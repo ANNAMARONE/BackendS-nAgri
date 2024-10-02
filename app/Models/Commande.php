@@ -12,9 +12,7 @@ class Commande extends Model
     protected $guarded = [];
     public function produits()
     {
-        return $this->belongsToMany(Produit::class)
-                    ->withPivot('quantite', 'prix_unitaire', 'montant_total', 'reference')
-                    ->withTimestamps();
+        return $this->belongsToMany(Produit::class, 'commande_produit')->withPivot('quantite');
     }
     
     public function calculerMontantTotal()

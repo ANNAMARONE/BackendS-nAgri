@@ -38,12 +38,12 @@ public function AfficheProduitParUser(Request $request){
     if (!$request->user()) {
         return response()->json(['error' => 'Veuillez vous connecter.'], 401);
     }
-    $produit = Produit::orderBy("created_at","desc")->paginate(10)
-    ->where('user_id', Auth::user()->id);
-    if ($produit->isEmpty()) {
+    $user = auth()->user();
+    $produits = Produit::where('user_id', $user->id)->paginate(10);
+    if ($produits->isEmpty()) {
         return response()->json(['message' => 'Aucune produit trouvée.'], 404);
     }
-    return response()->json($produit,200);   
+    return response()->json($produits,200);   
 }
 
     public function create()
@@ -152,7 +152,7 @@ public function AfficheProduitParUser(Request $request){
             $image = $request->file('image');
             $filename = time() . '.' . $image->getClientOriginalExtension();
             $path = $image->storeAs('images', $filename, 'public');
-            $produit->image = $filename;
+            $produit->image = $path;
         }
         
         $produit->save();

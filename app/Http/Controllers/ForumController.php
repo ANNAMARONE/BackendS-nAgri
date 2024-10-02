@@ -18,16 +18,17 @@ class ForumController extends Controller
      */
     public function index(Request $request)
     {
-    if(!$request->user()){
-        return response()->json(['error'=>'veuillez vous connecter'] ,401);
+        
+        $forums = Forum::with('user')->orderBy("created_at", "desc")->paginate(3);
+        
+        if ($forums->isEmpty()) {
+            return response()->json(["error" => "Aucun forum trouvé"], 404);
+        }
+        
+        return response()->json($forums, 200);
     }
-    $forum = Forum::orderBy("created_at", "desc")->get();
-    if($forum->isEmpty()){
-        return response()->json(["error"=> "Aucun forum trouver"] ,404);
-    }
-    return response ()->json($forum,200);
-    }
-
+    
+    
     /**
      * Show the form for creating a new resource.
      */
@@ -139,9 +140,7 @@ class ForumController extends Controller
     }
     public function commentaireForum(Request $request, $id)
     {
-        if(!$request->user()){
-            return response()->json(['error' => 'Veuillez vous connecter'], 401);
-        }
+       
         $forum = Forum::with('commentaires')->find($id);
         if(!$forum){
             return response()->json(['message' => 'Forum non trouvé'], 404);

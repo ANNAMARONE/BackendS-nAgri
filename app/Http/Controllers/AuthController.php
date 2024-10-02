@@ -92,7 +92,7 @@ $validator->sometimes('region', 'required|in:Dakar,Diourbel,Fatick,Kaffrine,Kaol
         $message = "Votre compte est crée avec succé";
 
         $twilio->messages->create(
-            '+221'.$telephone, // Ajouter le code pays du Sénégal
+            '+221'.$telephone, 
             [
                 'from' => env('TWILIO_PHONE_NUMBER'),
                 'body' => $message,
