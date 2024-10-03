@@ -141,7 +141,7 @@ class ForumController extends Controller
     public function commentaireForum(Request $request, $id)
     {
        
-        $forum = Forum::with('commentaires')->find($id);
+        $forum = Forum::with('commentaires','user')->find($id);
         if(!$forum){
             return response()->json(['message' => 'Forum non trouvé'], 404);
         }

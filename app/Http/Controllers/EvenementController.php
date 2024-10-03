@@ -129,7 +129,7 @@ class EvenementController extends Controller
             $image = $request->file('image');
             $filename = time() . '.' . $image->getClientOriginalExtension();
             $path = $image->storeAs('images', $filename, 'public');
-            $evenement->image = $filename;
+            $evenement->image = $path;
         }
       
         $evenement->save(); 
