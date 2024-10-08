@@ -97,6 +97,11 @@ public function afficherCommande(Request $request)
         'montant_total' => $montantTotal
     ], 200);
 }
+public function supprimerCommande(Request $request,$id){
+   $Commande = Commande::findOrFail($id)->delete();
+   return response()->json([
+    'commande'=> $Commande,
+   ],200);
 
-
+}
 }

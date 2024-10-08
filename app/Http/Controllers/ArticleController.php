@@ -40,7 +40,7 @@ class ArticleController extends Controller
         // Validation des données de la requête
         $validator = Validator::make($request->all(), [
             'libelle' => 'required|string|max:255',
-            'image' => 'required|mimes:jpeg,jpg,png|max:2048',
+            'image' => 'required|mimes:jpeg,jpg,png,webp|max:2048',
             'description' => 'required|string',
             'lien' => 'required|string|max:255',
             'statut' => 'required|string|min:1',
@@ -105,7 +105,7 @@ class ArticleController extends Controller
         // Validation des données de la requête
         $validator = Validator::make($request->all(), [
             'libelle' => 'required|string|max:255',
-            'image' => 'sometimes|mimes:jpeg,jpg,png|max:2048',
+            'image' => 'sometimes|mimes:jpeg,jpg,png,webp|max:2048',
             'description' => 'required|string',
             'lien' => 'required|string|max:255',
             'statut' => 'required|string|min:1', 
@@ -127,7 +127,7 @@ class ArticleController extends Controller
             $image = $request->file('image');
             $filename = time() . '.' . $image->getClientOriginalExtension();
             $path = $image->storeAs('images', $filename, 'public');
-            $article->image = $filename;
+            $article->image = $path;
         }
         $article->save(); 
         return response()->json([

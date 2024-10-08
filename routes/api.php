@@ -21,6 +21,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\CommentaireController;
 use App\Http\Controllers\CategorieProduitController;
 use App\Http\Controllers\CategorieRessourceController;
+use App\Http\Controllers\PaytechController;
 use App\Http\Controllers\UserController;
 
 Route::group(['middleware'=>'api',
@@ -30,7 +31,7 @@ Route::group(['middleware'=>'api',
     Route::post('/login',[AuthController::class,'login'])->name('login');
     Route::post('/logout',[AuthController::class,'logout'])->middleware('auth:api')->name('logout');
     Route::post('/refresh',[AuthController::class,'refresh'])->middleware('auth:api')->name('refresh');
-    Route::get('/me',[AuthController::class,'me'])->middleware('auth:api')->name('me');
+    Route::get('/me',[AuthController::class,'me']);
 
 });
 
@@ -48,21 +49,30 @@ Route::get('/détail_produit/{id}', [ProduitController::class,'show']);
 Route::get('/categories/{id}/produits', [ProduitController::class, 'produitParCategorie']);
 Route::get('/CatégorieProduit', [CategorieProduitController::class,'index']);
 Route::get('/catégorieRessouce', [CategorieRessourceController::class,'index']);
-Route::post('/product/{id}/like', [ProduitController::class, 'likeProduct']);
+Route::post('/produit/{id}/like', [ProduitController::class, 'likeProduct']);
 Route::get('/products/popular', [ProduitController::class, 'getPopularProducts']);
 Route::get('/ressources',[RessourceController::class,'index']);
 Route::get('/ressources/{id}', [RessourceController::class,'show']);
 Route::get('/ressources/categorie/{id}', [RessourceController::class,'RessourceCategorie']);
 Route::get('/forums',[ForumController::class,'index']);
 Route::get('/forums/{id}/commentaires', [CommentaireController::class, 'index']);
-Route::post('/commentaires/{id}/like', [CommentaireController::class, 'addLike']);
+Route::get('/forums/{id}', [ForumController::class, 'commentaireForum']);
+Route::get('/forum/{id}', [ForumController::class, 'show']);
 //Athentification
 Route::middleware('auth.jwt')->group(function () {
- 
+  Route::post('/forums/{id}/commentaires', [CommentaireController::class, 'store']);
+  Route::post('/commentaires/{id}/repondre', [CommentaireController::class, 'ReponseCommentaire']);
+  
+  Route::post('/commentaires/{id}/like', [CommentaireController::class, 'addLike']);   
+          Route::post('/ajout_forums', [ForumController::class,'store']);
+          Route::post('/payment', [CinetPayController::class, 'Payment']);
   Route::middleware(['role:admin|producteur'])->group(function () {
     Route::get('/utilisateurs', [UserController::class, 'index']);
     Route::get('/utilisateurs/{id}', [UserController::class, 'show']);
 
+   
+     
+        Route::post('/modifier_forums/{id}', [ForumController::class,'update']);
  
          //gestion evenement
  
@@ -71,45 +81,24 @@ Route::middleware('auth.jwt')->group(function () {
   Route::post('/Ajouter_produits', [ProduitController::class,'store']);
   Route::post('/modifier_produit/{id}', [ProduitController::class,'update']);
   Route::delete('/supprimer_produit/{id}', [ProduitController::class,'destroy']);
-    //gestion forum
-  
-    //gestion commentaire
-    // Route pour récupérer les commentaires d'un forum
 
 
-
-Route::post('/forums/{id}/commentaires', [CommentaireController::class, 'store']);
-
-
-
-
-
-
-Route::post('/commentaires/{id}/repondre', [CommentaireController::class, 'ReponseCommentaire']);
-
-
-    
-   
-    Route::post('/ajout_forums', [ForumController::class,'store']);
-    Route::get('/forums/{id}', [ForumController::class, 'commentaireForum']);
-    Route::get('/forum/{id}', [ForumController::class, 'show']);
-    Route::post('/modifier_forums/{id}', [ForumController::class,'update']);
   });
-  Route::post('/payment', [CinetPayController::class, 'Payment']);
+  
    // Routes accessibles uniquement aux clients
   Route::middleware(['role:client'])->group(function () {
      //payement
    
-  
+    
      Route::match(['get', 'post'], '/notify_url', [CinetPayController::class, 'notify_url'])->name('notify_url');
      Route::match(['get', 'post'], '/return_url', [CinetPayController::class, 'return_url'])->name('return_url');
  
-
   
   });
     //gestion panier
     Route::post('/commander', [CommandeController::class, 'store']);
     Route::get('/commandes', [CommandeController::class, 'AfficherCommandes']);
+    Route::post('/supprimer_commande/{id}', [CommandeController::class,'supprimerCommande']);
    
   // Routes accessibles uniquement aux producteurs
   Route::middleware(['role:producteur'])->group(function () {

@@ -187,7 +187,7 @@ $validator->sometimes('region', 'required|in:Dakar,Diourbel,Fatick,Kaffrine,Kaol
             $image = $request->file('profile');
             $filename = time() . '.' . $image->getClientOriginalExtension();
             $path = $image->storeAs('profiles', $filename, 'public');
-            $user->profile = $filename;
+            $user->profile = $path;
         }
     
         // Mettre à jour le mot de passe si nécessaire

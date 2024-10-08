@@ -108,7 +108,7 @@ class EvenementController extends Controller
          $evenement=evenement::findOrFail($id);
         $validator = Validator::make($request->all(), [
             "libelle"=>'required|string|max:255',
-            "image"=>'required|mimes:jpeg,jpg,png|max:2048',
+            "image"=>'sometimes|nullable|mimes:jpeg,jpg,png|max:2048',
             "description"=>'required|string',
             "lien"=>'required|string|max:255',
             "date"=>'required|date|after_or_equal:today', 

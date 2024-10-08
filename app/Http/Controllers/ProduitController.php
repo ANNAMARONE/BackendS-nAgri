@@ -127,7 +127,7 @@ public function AfficheProduitParUser(Request $request){
         
         $validator = Validator::make($request->all(), [
             "libelle" => "required|string|max:255",
-            "image" => "nullable|mimes:jpeg,jpg,png|max:2048", 
+            "image" => "sometimes|nullable|mimes:jpeg,jpg,png|max:2048", 
             "description" => "required|string",
             "quantite" => "required|integer",
             "prix" => "required|integer",
@@ -191,12 +191,12 @@ public function AfficheProduitParUser(Request $request){
     }
     public function likeProduct($id)
 {
-    $product = Produit::findOrFail($id);
-    $product->increment('likes'); // Incrémente la colonne 'likes'
-    
+    $produit = Produit::findOrFail($id);
+    $produit->likes += 1;
+    $produit->save();
     return response()->json([
         'message' => 'Produit aimé avec succès!',
-        'likes' => $product->likes
+        'likes' => $produit->likes
     ]);
 }
 
