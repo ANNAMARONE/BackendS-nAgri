@@ -32,6 +32,8 @@ Route::group(['middleware'=>'api',
     Route::post('/logout',[AuthController::class,'logout'])->middleware('auth:api')->name('logout');
     Route::post('/refresh',[AuthController::class,'refresh'])->middleware('auth:api')->name('refresh');
     Route::get('/me',[AuthController::class,'me']);
+    Route::post('/verifier-otp', [AuthController::class, 'verifyOtp']);
+    
 
 });
 
@@ -49,7 +51,7 @@ Route::get('/détail_produit/{id}', [ProduitController::class,'show']);
 Route::get('/categories/{id}/produits', [ProduitController::class, 'produitParCategorie']);
 Route::get('/CatégorieProduit', [CategorieProduitController::class,'index']);
 Route::get('/catégorieRessouce', [CategorieRessourceController::class,'index']);
-Route::post('/produit/{id}/like', [ProduitController::class, 'likeProduct']);
+
 Route::get('/products/popular', [ProduitController::class, 'getPopularProducts']);
 Route::get('/ressources',[RessourceController::class,'index']);
 Route::get('/ressources/{id}', [RessourceController::class,'show']);
@@ -62,7 +64,7 @@ Route::get('/forum/{id}', [ForumController::class, 'show']);
 Route::middleware('auth.jwt')->group(function () {
   Route::post('/forums/{id}/commentaires', [CommentaireController::class, 'store']);
   Route::post('/commentaires/{id}/repondre', [CommentaireController::class, 'ReponseCommentaire']);
-  
+  Route::post('/produit/{id}/like', [ProduitController::class, 'likeProduct']);
   Route::post('/commentaires/{id}/like', [CommentaireController::class, 'addLike']);   
           Route::post('/ajout_forums', [ForumController::class,'store']);
           Route::post('/payment', [CinetPayController::class, 'Payment']);

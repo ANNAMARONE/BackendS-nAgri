@@ -1,21 +1,27 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\User;
+use Carbon\Carbon;
 
+use App\Models\Otp;
+use App\Models\User;
+use App\Mail\OtpMail;
 use App\Models\Client;
 use App\Models\Producteur;
 use App\services\SmsService;
+use Illuminate\Http\Request; 
+use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
+
 use App\Notifications\OTPNotification;
 use Twilio\Rest\Client as TwilioClient;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Http\Request; // Correct import for Request
 
 class AuthController extends Controller
 {
@@ -78,8 +84,54 @@ $validator->sometimes('region', 'required|in:Dakar,Diourbel,Fatick,Kaffrine,Kaol
         elseif ($request->role === 'admin') {
             $user->assignRole('admin');
         }
-        // $this->sendSms($user->telephone);
-        return response()->json($user, 201);
+        $email = $request->input('email');
+        $otp = rand(100000, 999999);
+        $expirationTime = now()->addMinutes(10);
+    
+        // Stocker l'OTP dans le cache
+        Cache::put("otp:$email", $otp, $expirationTime);
+    
+        // Enregistrement de l'OTP dans la table 'otps'
+        DB::table('otps')->insert([
+            'email' => $email,
+            'otp' => $otp,
+            'expires_at' => $expirationTime,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    
+        // Envoi de l'OTP par email
+        try {
+            Mail::to($email)->send(new OtpMail($otp));
+            return response()->json(['message' => 'OTP sent successfully'], 200);
+        } catch (\Exception $e) {
+            // Capture et retour du message d'erreur exact
+            return response()->json(['error' => 'Failed to send OTP', 'message' => $e->getMessage()], 500);
+        } 
+   
+    }
+    public function verifyOtp(Request $request) {
+        // Récupérer l'OTP et l'email depuis la requête
+        $email = $request->input('email');
+        $otp = $request->input('otp');
+    
+        // Vérifier si l'OTP correspond à celui en cache
+        if (Cache::get("otp:$email") !== $otp) {
+            return response()->json(['error' => 'OTP is invalid or expired'], 400);
+        }
+    
+        // Si l'OTP est correct, mettre à jour le statut de l'utilisateur
+        $user = User::where('email', $email)->first();
+        
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+    
+        // Mettre à jour le statut pour valider l'utilisateur
+        $user->statut = true; // Activer le compte
+        $user->save();
+    
+        return response()->json(['message' => 'OTP verified successfully, account activated'], 200);
     }
     
 
