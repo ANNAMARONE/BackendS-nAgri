@@ -44,7 +44,6 @@ Route::get('/evenement/{id}', [EvenementController::class,'show']);
     //gestion article
 Route::get('/articles',[ArticleController::class,'index'])->name('articles');
  Route::get('/article/{id}', [ArticleController::class,'show']);
-Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
 
 Route::get('/afficher_produit',[ProduitController::class,'index']);
 Route::get('/détail_produit/{id}', [ProduitController::class,'show']);

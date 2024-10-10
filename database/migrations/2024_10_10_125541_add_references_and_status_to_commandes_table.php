@@ -11,20 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->boolean('statut')->default(false)->change();
+        Schema::table('commandes', function (Blueprint $table) {
+            $table->string('references')->nullable();
+            $table->string('status_de_commande')->default('invalide');
         });
     }
 
     /**
-     * 
      * Reverse the migrations.
-     * 
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->boolean('statut')->default(true)->change();
+        Schema::table('commandes', function (Blueprint $table) {
+            $table->dropColumn('references');
+            $table->dropColumn('status_de_commande');
         });
     }
 };
