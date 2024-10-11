@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreCommandeRequest;
 use App\Http\Requests\UpdateCommandeRequest;
-
+use \Illuminate\Validation\ValidationException;
 
 class CommandeController extends Controller
 {
@@ -38,34 +38,65 @@ class CommandeController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    { $validatedData = $request->validate([
-        'montant_total' => 'required|numeric',
-        'produits' => 'required|array',
-        'produits.*.produit_id' => 'required|exists:produits,id',
-        'produits.*.quantite' => 'required|integer|min:1',
-    ]);
+     */public function store(Request $request)
+{
+    try {
+        // Valider les données de la requête
+        $validatedData = $request->validate([
+            'montant_total' => 'required|numeric',
+            'produits' => 'required|array',
+            'produits.*.produit_id' => 'required|exists:produits,id',
+            'produits.*.quantite' => 'required|integer|min:1',
+        ]);
 
-    // Récupérer l'utilisateur connecté
-    $user = Auth::user();
+        // Récupérer l'utilisateur connecté
+        $user = Auth::user();
 
-    // Créer la commande
-    $commande = new Commande();
-    $commande->user_id = $user->id; 
-    $commande->montant_total = $validatedData['montant_total'];
-    $commande->save();
+        // Créer une nouvelle commande
+        $commande = new Commande();
+        $commande->user_id = $user->id;
+        $commande->references = 'REF-' . strtoupper(uniqid()); 
+        $commande->montant_total = 0; 
+        $commande->status_de_commande = 'en_attente'; 
+        $commande->save();
 
-    // Enregistrer les produits dans la commande
-    foreach ($validatedData['produits'] as $produitData) {
-        $commande->produits()->attach($produitData['produit_id'], ['quantite' => $produitData['quantite']]);
+        // Variable pour calculer le montant total de la commande
+        $montantTotal = 0;
+
+       
+        foreach ($validatedData['produits'] as $produitData) {
+            // Récupérer le produit pour obtenir son prix unitaire
+            $produit = Produit::findOrFail($produitData['produit_id']);
+            $quantite = $produitData['quantite'];
+            $montantProduit = $produit->prix * $quantite; 
+
+            // Ajouter le produit à la commande avec la quantité et le montant
+            $commande->produits()->attach($produit->id, [
+                'quantite' => $quantite,
+                'montant' => $montantProduit,
+            ]);
+
+            $montantTotal += $montantProduit;
+        }
+
+        // Mettre à jour le montant total de la commande après avoir ajouté tous les produits
+        $commande->montant_total = $montantTotal;
+        $commande->save();
+        return response()->json([
+            'message' => 'Commande créée avec succès',
+            'commande' => $commande,
+        ], 201);
+
+   
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Une erreur est survenue lors de la création de la commande',
+            'error' => $e->getMessage(),
+        ], 500);
     }
-
-    return response()->json([
-        'message' => 'Commande créée avec succès',
-        'commande' => $commande,
-    ], 201);
 }
+
+       
 public function AfficherCommandes()
 {
     $user = Auth::user();

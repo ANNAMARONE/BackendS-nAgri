@@ -16,6 +16,7 @@
         "predis/predis": "^2.2",
         "sadiqsalau/laravel-otp": "^1.0",
         "spatie/laravel-permission": "^6.9",
+        "srmklive/paypal": "^3.0",
         "twilio/sdk": "^7.16",
         "tymon/jwt-auth": "^2.1"
     },

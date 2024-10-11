@@ -19,6 +19,11 @@ class OtpMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Votre OTP')->view('emails.otp');
+        return $this->subject('Votre OTP')
+                    ->view('emails.otp')
+                    ->with([
+                        'otp' => $this->otp,
+                    ]);
     }
+    
 }

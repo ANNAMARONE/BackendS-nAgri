@@ -84,6 +84,7 @@ $validator->sometimes('region', 'required|in:Dakar,Diourbel,Fatick,Kaffrine,Kaol
         elseif ($request->role === 'admin') {
             $user->assignRole('admin');
         }
+        
         $email = $request->input('email');
         $otp = rand(100000, 999999);
         $expirationTime = now()->addMinutes(10);
@@ -103,10 +104,10 @@ $validator->sometimes('region', 'required|in:Dakar,Diourbel,Fatick,Kaffrine,Kaol
         // Envoi de l'OTP par email
         try {
             Mail::to($email)->send(new OtpMail($otp));
-            return response()->json(['message' => 'OTP sent successfully'], 200);
+            return response()->json(['message' => 'OTP envoyé avec succès'], 200);
         } catch (\Exception $e) {
             // Capture et retour du message d'erreur exact
-            return response()->json(['error' => 'Failed to send OTP', 'message' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Échec de l\'envoi de l\'OTP', 'message' => $e->getMessage()], 500);
         } 
    
     }
@@ -117,21 +118,21 @@ $validator->sometimes('region', 'required|in:Dakar,Diourbel,Fatick,Kaffrine,Kaol
     
         // Vérifier si l'OTP correspond à celui en cache
         if (Cache::get("otp:$email") !== $otp) {
-            return response()->json(['error' => 'OTP is invalid or expired'], 400);
+            return response()->json(['error' => 'L\'OTP est invalide ou a expiré'], 400);
         }
     
         // Si l'OTP est correct, mettre à jour le statut de l'utilisateur
         $user = User::where('email', $email)->first();
         
         if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
+            return response()->json(['error' => 'Utilisateur non trouvé'], 404);
         }
     
         // Mettre à jour le statut pour valider l'utilisateur
         $user->statut = true; // Activer le compte
         $user->save();
     
-        return response()->json(['message' => 'OTP verified successfully, account activated'], 200);
+        return response()->json(['message' => 'OTP vérifié avec succès, compte activé'], 200);
     }
     
 
