@@ -5,10 +5,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\PanierController;
+use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\PaytechController;
 use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\CinetPayController;
 use App\Http\Controllers\CommandeController;
@@ -21,8 +24,6 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\CommentaireController;
 use App\Http\Controllers\CategorieProduitController;
 use App\Http\Controllers\CategorieRessourceController;
-use App\Http\Controllers\PaytechController;
-use App\Http\Controllers\UserController;
 
 Route::group(['middleware'=>'api',
 'prefix'=> 'auth',
@@ -36,8 +37,11 @@ Route::group(['middleware'=>'api',
     
 
 });
+Route::get('paypal/create-order/{commande_id}', [PayPalController::class, 'createOrder'])->name('paypal.createOrder');
 
 
+Route::post('/create-order', [PayPalController::class, 'createOrder']);
+Route::post('/capture-order', [PayPalController::class, 'captureOrder']);
 Route::get('/evenements',[EvenementController::class,'index']);
   
 Route::get('/evenement/{id}', [EvenementController::class,'show']);
@@ -66,7 +70,7 @@ Route::middleware('auth.jwt')->group(function () {
   Route::post('/produit/{id}/like', [ProduitController::class, 'likeProduct']);
   Route::post('/commentaires/{id}/like', [CommentaireController::class, 'addLike']);   
           Route::post('/ajout_forums', [ForumController::class,'store']);
-          Route::post('/payment', [CinetPayController::class, 'Payment']);
+         
   Route::middleware(['role:admin|producteur'])->group(function () {
     Route::get('/utilisateurs', [UserController::class, 'index']);
     Route::get('/utilisateurs/{id}', [UserController::class, 'show']);
@@ -91,9 +95,7 @@ Route::middleware('auth.jwt')->group(function () {
      //payement
    
     
-     Route::match(['get', 'post'], '/notify_url', [CinetPayController::class, 'notify_url'])->name('notify_url');
-     Route::match(['get', 'post'], '/return_url', [CinetPayController::class, 'return_url'])->name('return_url');
- 
+   
   
   });
     //gestion panier

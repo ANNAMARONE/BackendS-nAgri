@@ -26,5 +26,8 @@ class Payment extends Model
     {
         return $this->belongsTo(User::class, 'customer_email', 'email');
     }
-
+    public function commande()
+    {
+        return $this->belongsTo(Commande::class);
+    }
 }

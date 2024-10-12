@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Produit;
+use App\Models\Payment;
 
+use App\Models\Produit;
 use App\Models\Commande;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -47,6 +48,8 @@ class CommandeController extends Controller
             'produits' => 'required|array',
             'produits.*.produit_id' => 'required|exists:produits,id',
             'produits.*.quantite' => 'required|integer|min:1',
+            'payment_method' => 'required|in:PayPal,Paiement à la livraison',
+
         ]);
 
         // Récupérer l'utilisateur connecté
@@ -82,8 +85,20 @@ class CommandeController extends Controller
         // Mettre à jour le montant total de la commande après avoir ajouté tous les produits
         $commande->montant_total = $montantTotal;
         $commande->save();
+
+        // Enregistrer la méthode de paiement
+        $payment = new Payment();
+        $payment->commande_id = $commande->id; // Utilisez 'commande_id' pour la relation avec la commande
+        $payment->payment_method = $validatedData['payment_method']; // PayPal ou Paiement à la livraison
+        $payment->amount = $commande->montant_total; // Montant total de la commande
+        $payment->payment_status = 'en_attente'; // Statut du paiement initial
+        $payment->save();
+        if ($validatedData['payment_method'] === 'PayPal') {
+            // Rediriger vers PayPal pour le paiement
+            return redirect()->route('paypal.createOrder', ['commande_id' => $commande->id]);
+        }
         return response()->json([
-            'message' => 'Commande créée avec succès',
+            'message' => 'Commande créée avec succès, paiement à la livraison.',
             'commande' => $commande,
         ], 201);
 
