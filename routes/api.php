@@ -37,11 +37,9 @@ Route::group(['middleware'=>'api',
     
 
 });
-Route::get('paypal/create-order/{commande_id}', [PayPalController::class, 'createOrder'])->name('paypal.createOrder');
+Route::get('payment/success/{commande}', [PaymentController::class, 'success'])->name('payment.success');
+Route::get('payment/cancel/{commande}', [PaymentController::class, 'cancel'])->name('payment.cancel');
 
-
-Route::post('/create-order', [PayPalController::class, 'createOrder']);
-Route::post('/capture-order', [PayPalController::class, 'captureOrder']);
 Route::get('/evenements',[EvenementController::class,'index']);
   
 Route::get('/evenement/{id}', [EvenementController::class,'show']);

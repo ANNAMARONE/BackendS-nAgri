@@ -39,77 +39,102 @@ class CommandeController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     */public function store(Request $request)
-{
-    try {
-        // Valider les données de la requête
-        $validatedData = $request->validate([
-            'montant_total' => 'required|numeric',
-            'produits' => 'required|array',
-            'produits.*.produit_id' => 'required|exists:produits,id',
-            'produits.*.quantite' => 'required|integer|min:1',
-            'payment_method' => 'required|in:PayPal,Paiement à la livraison',
-
-        ]);
-
-        // Récupérer l'utilisateur connecté
-        $user = Auth::user();
-
-        // Créer une nouvelle commande
-        $commande = new Commande();
-        $commande->user_id = $user->id;
-        $commande->references = 'REF-' . strtoupper(uniqid()); 
-        $commande->montant_total = 0; 
-        $commande->status_de_commande = 'en_attente'; 
-        $commande->save();
-
-        // Variable pour calculer le montant total de la commande
-        $montantTotal = 0;
-
-       
-        foreach ($validatedData['produits'] as $produitData) {
-            // Récupérer le produit pour obtenir son prix unitaire
-            $produit = Produit::findOrFail($produitData['produit_id']);
-            $quantite = $produitData['quantite'];
-            $montantProduit = $produit->prix * $quantite; 
-
-            // Ajouter le produit à la commande avec la quantité et le montant
-            $commande->produits()->attach($produit->id, [
-                'quantite' => $quantite,
-                'montant' => $montantProduit,
+     */
+    public function store(Request $request)
+    {
+        try {
+            // Valider les données de la requête
+            $validatedData = $request->validate([
+                'montant_total' => 'required|numeric',
+                'produits' => 'required|array',
+                'produits.*.produit_id' => 'required|exists:produits,id',
+                'produits.*.quantite' => 'required|integer|min:1',
+                'payment_method' => 'required|in:en_ligne,Paiement à la livraison',
             ]);
-
-            $montantTotal += $montantProduit;
+    
+            // Récupérer l'utilisateur connecté
+            $user = Auth::user();
+    
+            // Créer une nouvelle commande
+            $commande = new Commande();
+            $commande->user_id = $user->id;
+            $commande->references = 'REF-' . strtoupper(uniqid()); 
+            $commande->montant_total = 0; 
+            $commande->status_de_commande = 'en_attente'; 
+            $commande->save();
+    
+            // Variable pour calculer le montant total de la commande
+            $montantTotal = 0;
+    
+            foreach ($validatedData['produits'] as $produitData) {
+                // Récupérer le produit pour obtenir son prix unitaire
+                $produit = Produit::findOrFail($produitData['produit_id']);
+                $quantite = $produitData['quantite'];
+                $montantProduit = $produit->prix * $quantite; 
+    
+                // Ajouter le produit à la commande avec la quantité et le montant
+                $commande->produits()->attach($produit->id, [
+                    'quantite' => $quantite,
+                    'montant' => $montantProduit,
+                ]);
+    
+                $montantTotal += $montantProduit;
+            }
+    
+            // Mettre à jour le montant total de la commande après avoir ajouté tous les produits
+            $commande->montant_total = $montantTotal;
+            $commande->save();
+    
+            // Enregistrer la méthode de paiement
+            $payment = new Payment();
+            $payment->commande_id = $commande->id; 
+            $payment->payment_method = $validatedData['payment_method']; 
+            $payment->amount = $commande->montant_total; 
+            $payment->payment_status = 'en_attente'; 
+            $payment->save();
+    
+            // Gérer le paiement en ligne avec PayDunya
+            if ($validatedData['payment_method'] === 'en_ligne') {
+                // Créer une facture PayDunya
+                $invoice = new \Paydunya\Checkout\CheckoutInvoice();
+                $invoice->setCurrency('XOF'); // Définir la devise
+                $invoice->setTotalAmount($montantTotal); // Montant total
+                $invoice->setDescription('Paiement pour la commande ' . $commande->references); // Description
+                $invoice->addCustomer($user->name, $user->email, $user->phone); // Informations sur le client
+                
+                // URL de retour après paiement
+                $invoice->setReturnUrl(route('payment.success', ['commande' => $commande->id]));
+                $invoice->setCancelUrl(route('payment.cancel', ['commande' => $commande->id]));
+    
+                // Créer l'invoice et obtenir le lien de paiement
+                $paymentLink = $invoice->create(); // Si tout est correct, cela retournera l'URL de paiement
+    
+                if ($paymentLink) {
+                    return response()->json([
+                        'message' => 'Commande créée avec succès. Veuillez procéder au paiement.',
+                        'payment_link' => $paymentLink, // URL de paiement
+                        'commande' => $commande,
+                    ], 201);
+                } else {
+                    return response()->json([
+                        'message' => 'Erreur lors de la création de la facture de paiement.',
+                    ], 500);
+                }
+            }
+    
+            return response()->json([
+                'message' => 'Commande créée avec succès, paiement à la livraison.',
+                'commande' => $commande,
+            ], 201);
+    
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Une erreur est survenue lors de la création de la commande',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-        // Mettre à jour le montant total de la commande après avoir ajouté tous les produits
-        $commande->montant_total = $montantTotal;
-        $commande->save();
-
-        // Enregistrer la méthode de paiement
-        $payment = new Payment();
-        $payment->commande_id = $commande->id; // Utilisez 'commande_id' pour la relation avec la commande
-        $payment->payment_method = $validatedData['payment_method']; // PayPal ou Paiement à la livraison
-        $payment->amount = $commande->montant_total; // Montant total de la commande
-        $payment->payment_status = 'en_attente'; // Statut du paiement initial
-        $payment->save();
-        if ($validatedData['payment_method'] === 'PayPal') {
-            // Rediriger vers PayPal pour le paiement
-            return redirect()->route('paypal.createOrder', ['commande_id' => $commande->id]);
-        }
-        return response()->json([
-            'message' => 'Commande créée avec succès, paiement à la livraison.',
-            'commande' => $commande,
-        ], 201);
-
-   
-    } catch (\Exception $e) {
-        return response()->json([
-            'message' => 'Une erreur est survenue lors de la création de la commande',
-            'error' => $e->getMessage(),
-        ], 500);
     }
-}
+    
 
        
 public function AfficherCommandes()

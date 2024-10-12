@@ -10,10 +10,10 @@ class PayPalController extends Controller
 {
     public function createOrder(Request $request)
     {
-        // Debug: Afficher toutes les données reçues
-        // dd($request->all());
+        // Assurez-vous que commande_id et montant_total sont passés dans la requête
+        $commandeId = $request->input('commande_id');
+        $montantTotalString = (string) $request->input('montant_total');
     
-        // Instanciez le client PayPal
         $provider = new PayPalClient;
     
         // Configuration
@@ -23,14 +23,6 @@ class PayPalController extends Controller
         if (empty($config['client_id']) || empty($config['client_secret'])) {
             return response()->json(['message' => 'Configuration PayPal invalide. Assurez-vous que client_id et client_secret sont définis.'], 500);
         }
-    
-        // Vérifiez que le montant total est présent
-        if (empty($request->montant_total)) {
-            return response()->json(['message' => 'Le montant total est requis.'], 400);
-        }
-    
-        // Convertir le montant total en chaîne de caractères
-        $montantTotalString = (string) $request->montant_total;
     
         // Obtenez un token d'accès
         try {
@@ -50,43 +42,50 @@ class PayPalController extends Controller
                 "purchase_units" => [
                     [
                         "amount" => [
-                            "currency_code" => "USD",
-                            "value" => $montantTotalString, // Utilisez la chaîne convertie ici
-                        ]
-                    ]
-                ]
+                            "currency_code" => "EUR", // Changer USD à XOF
+                            "value" => $montantTotalString,
+                        ],
+                    ],
+                ],
             ]);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Erreur lors de la création de la commande: ' . $e->getMessage()], 500);
         }
+    
+        // Sauvegarder l'ID de commande PayPal pour un usage futur
+        // (Vous pouvez mettre à jour la commande ici si nécessaire)
     
         return response()->json($order);
     }
     
     
     
+    
 
     public function captureOrder(Request $request)
-{
-    $provider = new PayPalClient;
-    $provider->setApiCredentials(config('paypal'));
-    $provider->setAccessToken($provider->getAccessToken());
-
-    $result = $provider->capturePaymentOrder($request->orderID);
-
-    // Créer un enregistrement de paiement
-    if ($result['status'] === 'COMPLETED') {
-        Payment::create([
-            'order_id' => $request->order_id, // Assurez-vous que l'ID de la commande est passé dans la requête
-            'payment_method' => 'PayPal',
-            'amount' => $result['purchase_units'][0]['payments']['captures'][0]['amount']['value'],
-            'currency' => $result['purchase_units'][0]['payments']['captures'][0]['amount']['currency_code'],
-            'payment_status' => $result['status'],
-            'transaction_id' => $result['purchase_units'][0]['payments']['captures'][0]['id'],
-        ]);
+    {
+        $provider = new PayPalClient;
+        $provider->setApiCredentials(config('paypal'));
+        $provider->setAccessToken($provider->getAccessToken());
+    
+        // Capturer le paiement
+        $result = $provider->capturePaymentOrder($request->orderID);
+    
+        // Vérifiez le statut de la commande
+        if ($result['status'] === 'COMPLETED') {
+            // Créer un enregistrement de paiement
+            Payment::create([
+                'commande_id' => $request->commande_id, // Assurez-vous que l'ID de la commande est passé dans la requête
+                'payment_method' => 'PayPal',
+                'amount' => $result['purchase_units'][0]['payments']['captures'][0]['amount']['value'],
+                'currency' => $result['purchase_units'][0]['payments']['captures'][0]['amount']['currency_code'],
+                'payment_status' => $result['status'],
+                'transaction_id' => $result['purchase_units'][0]['payments']['captures'][0]['id'],
+            ]);
+        }
+    
+        return response()->json($result);
     }
-
-    return response()->json($result);
-}
+    
 
 }
