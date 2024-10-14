@@ -37,8 +37,8 @@ Route::group(['middleware'=>'api',
     
 
 });
-Route::get('payment/success/{commande}', [PaymentController::class, 'success'])->name('payment.success');
-Route::get('payment/cancel/{commande}', [PaymentController::class, 'cancel'])->name('payment.cancel');
+Route::get('payment/success/{commande}', [CommandeController::class, 'success'])->name('payment.success');
+Route::get('payment/cancel/{commande}', [CommandeController::class, 'cancel'])->name('payment.cancel');
 
 Route::get('/evenements',[EvenementController::class,'index']);
   
