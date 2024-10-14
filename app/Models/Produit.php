@@ -27,7 +27,7 @@ class Produit extends Model
     
     public function commandes()
     {
-        return $this->belongsToMany(Commande::class)
+        return $this->belongsToMany(Commande::class,'commande_produit')
                     ->withPivot('quantite', 'prix_unitaire', 'montant_total', 'reference')
                     ->withTimestamps();
     }

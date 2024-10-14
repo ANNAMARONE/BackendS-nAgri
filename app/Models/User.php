@@ -26,7 +26,7 @@ public function forums(){
 }
 public function commandes()
 {
-    return $this->hasMany(Commande::class);
+    return $this->hasMany(Commande::class,'user_id');
 }
 
 public function producteur()

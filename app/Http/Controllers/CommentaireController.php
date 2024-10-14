@@ -80,6 +80,33 @@ public function ReponseCommentaire(Request $request, $id)
         'data' => $reply
     ], 201);
 }
+public function AfficherReponses($id)
+{
+    // Charger le commentaire avec les réponses et les informations sur les utilisateurs des réponses
+    $commentaire = Commentaire::with(['replies.user'])->find($id);
+
+    // Vérifier si le commentaire existe
+    if (!$commentaire) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Commentaire non trouvé'
+        ], 404);
+    }
+
+    // Préparer les données pour le retour
+    $data = [
+        'commentaire' => $commentaire,
+        'reponses' => $commentaire->replies
+    ];
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Réponses récupérées avec succès',
+        'data' => $data
+    ], 200);
+}
+
+
 
 
 }

@@ -37,8 +37,7 @@ Route::group(['middleware'=>'api',
     
 
 });
-Route::get('payment/success/{commande}', [CommandeController::class, 'success'])->name('payment.success');
-Route::get('payment/cancel/{commande}', [CommandeController::class, 'cancel'])->name('payment.cancel');
+
 
 Route::get('/evenements',[EvenementController::class,'index']);
   
@@ -53,32 +52,34 @@ Route::get('/categories/{id}/produits', [ProduitController::class, 'produitParCa
 Route::get('/CatégorieProduit', [CategorieProduitController::class,'index']);
 Route::get('/catégorieRessouce', [CategorieRessourceController::class,'index']);
 
-Route::get('/products/popular', [ProduitController::class, 'getPopularProducts']);
 Route::get('/ressources',[RessourceController::class,'index']);
 Route::get('/ressources/{id}', [RessourceController::class,'show']);
 Route::get('/ressources/categorie/{id}', [RessourceController::class,'RessourceCategorie']);
 Route::get('/forums',[ForumController::class,'index']);
-Route::get('/forums/{id}/commentaires', [CommentaireController::class, 'index']);
+Route::get('/forums/{id}/commentaires', [ForumController::class, 'index']);
 Route::get('/forums/{id}', [ForumController::class, 'commentaireForum']);
 Route::get('/forum/{id}', [ForumController::class, 'show']);
+Route::get('/commentaire/{id}/reponses', [CommentaireController::class, 'AfficherReponses']);
+
 //Athentification
 Route::middleware('auth.jwt')->group(function () {
   Route::post('/forums/{id}/commentaires', [CommentaireController::class, 'store']);
   Route::post('/commentaires/{id}/repondre', [CommentaireController::class, 'ReponseCommentaire']);
   Route::post('/produit/{id}/like', [ProduitController::class, 'likeProduct']);
   Route::post('/commentaires/{id}/like', [CommentaireController::class, 'addLike']);   
-          Route::post('/ajout_forums', [ForumController::class,'store']);
-         
+  Route::post('/ajout_forums', [ForumController::class,'store']);
+  Route::post('/user/profile', [AuthController::class, 'updateProfile']);       
   Route::middleware(['role:admin|producteur'])->group(function () {
     Route::get('/utilisateurs', [UserController::class, 'index']);
     Route::get('/utilisateurs/{id}', [UserController::class, 'show']);
-
-   
-     
-        Route::post('/modifier_forums/{id}', [ForumController::class,'update']);
- 
-         //gestion evenement
- 
+//gestion des commandes 
+Route::get('/mes-commandes', [CommandeController::class, 'index']);
+Route::post('/commander', [CommandeController::class, 'store']); 
+Route::get('/commandes',[CommandeController::class,'AfficherMesCommande']);
+Route::delete('/commandes/{id}', [CommandeController::class, 'supprimerCommande']);
+Route::put('/commandes/{id}/traiter', [CommandeController::class, 'TraiterCommande']);
+Route::get('payment/success/{commande}', [CommandeController::class, 'success'])->name('payment.success');
+Route::get('payment/cancel/{commande}', [CommandeController::class, 'cancel'])->name('payment.cancel');
     //gestion des produits
   Route::get('afficher_produitParUser',[ProduitController::class,'AfficheProduitParUser']);
   Route::post('/Ajouter_produits', [ProduitController::class,'store']);
@@ -89,16 +90,9 @@ Route::middleware('auth.jwt')->group(function () {
   });
   
    // Routes accessibles uniquement aux clients
-  Route::middleware(['role:client'])->group(function () {
-     //payement
-   
-    
-   
-  
-  });
+
     //gestion panier
-    Route::post('/commander', [CommandeController::class, 'store']);
-    Route::get('/commandes', [CommandeController::class, 'AfficherCommandes']);
+   
     Route::post('/supprimer_commande/{id}', [CommandeController::class,'supprimerCommande']);
    
   // Routes accessibles uniquement aux producteurs
@@ -147,7 +141,7 @@ Route::middleware('auth.jwt')->group(function () {
     Route::delete('/permissions/{id}', [PermissionController::class, 'destroy']);
     //gestion catégorie de Produit
   Route::post('/Ajout_categorieProduit', [CategorieProduitController::class,'store']);
-  
+  Route::post('/modifier_forums/{id}', [ForumController::class,'update']);
   //gestion catégorie de Ressource
   Route::post('/Ajout_CategorieRessource', [CategorieRessourceController::class,'store']);
 
@@ -158,8 +152,5 @@ Route::post('/modifier_categorieRessource/{id}', [CategorieRessourceController::
 Route::delete('/supprimer_categorieRessource/{id}', [CategorieRessourceController::class,'destroy']);
 
   });
-  
- 
-  Route::post('/user/profile', [AuthController::class, 'updateProfile']);
 });
 

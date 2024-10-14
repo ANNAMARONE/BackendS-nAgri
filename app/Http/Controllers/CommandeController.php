@@ -1,41 +1,46 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\User;
 use App\Models\Payment;
 
 use App\Models\Produit;
 use App\Models\Commande;
+use App\Mail\CommandeInfo;
 use Illuminate\Http\Request;
+use App\Mail\CommandeCreated;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Paydunya\Checkout\CheckoutInvoice;
 use App\Http\Requests\StoreCommandeRequest;
 use App\Http\Requests\UpdateCommandeRequest;
 use \Illuminate\Validation\ValidationException;
-use Paydunya\Checkout\CheckoutInvoice;
-class CommandeController extends Controller
 
+class CommandeController extends Controller
 
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        // Vérifie si l'utilisateur est authentifié
-        if (!$request->user()) {
-            return response()->json(['error' => 'Utilisateur non authentifié'], 401);
-        }
+       $user=Auth::user();
+       //récuppérer les commandes faites par l'utilisateur connecté
+       $commande=Commande::where('user_id',$user->id)
+       ->with('produits')
+       ->get();
+       if($commande->isEmpty()){
+        return response()->json([
+            'message'=>'Aucune commande trouvée pour cet utilisateur.',
+            'commandes'=>[]
 
-        $user = $request->user();
-
-        // Récupérer tous les Commandes associés à cet utilisateur
-        $Commandes = Commande::where('user_id', $user->id)
-                         ->where('etat_commande', 'en cours')
-                         ->with('produits') 
-                         ->get();
-
-        // Retourner les Commandes sous forme de réponse JSON
-        return response()->json($Commandes);
+        ],200);
+       }
+       return response()->json([
+        'message'=>'Liste de vos commandes',
+        'commandes'=>$commande
+       ],200);
     }
     
 
@@ -66,15 +71,17 @@ class CommandeController extends Controller
         $commande->payment_method = $validatedData['payment_method'];
         $commande->save();
 
+    
+      
         // Variable pour calculer le montant total de la commande
         $montantTotal = 0;
-
+      
         foreach ($validatedData['produits'] as $produitData) {
             // Récupérer le produit pour obtenir son prix unitaire
             $produit = Produit::findOrFail($produitData['produit_id']);
             $quantite = $produitData['quantite'];
             $montantProduit = $produit->prix * $quantite;
-
+            
             // Ajouter le produit à la commande avec la quantité et le montant
             $commande->produits()->attach($produit->id, [
                 'quantite' => $quantite,
@@ -83,12 +90,13 @@ class CommandeController extends Controller
 
             $montantTotal += $montantProduit;
         }
+     
 
         // Vérifiez ici que le montant total est correct
         if ($montantTotal < 200) {
             return response()->json([
                 'message' => 'Le montant total doit être supérieur ou égal à 200 FCFA.',
-                'montant_total' => $montantTotal // Ajoutez le montant total dans la réponse
+                'montant_total' => $montantTotal 
             ], 400);
         }
 
@@ -103,7 +111,11 @@ class CommandeController extends Controller
         $payment->total_amount = $commande->montant_total;
         $payment->payment_status = 'en_attente';
         $payment->save();
-
+        $this->sendCommandeInfo($commande->id);
+        if ($commande->payment_method == "Paiement à la livraison") {
+            Mail::to($user->email)->send(new CommandeCreated($commande, "Paiement à la livraison"));
+        }
+        
         // Gérer le paiement en ligne avec PayDunya
         if ($validatedData['payment_method'] === 'en_ligne') {
             // Configurer PayDunya
@@ -135,9 +147,12 @@ class CommandeController extends Controller
                 $paymentLink = $invoice->getInvoiceUrl();
 
                 // Mettez à jour le paiement avec le lien de transaction
-                $payment->transaction_id = $invoice->getInvoiceUrl(); // Utilisez la méthode correcte ici
+                $payment->transaction_id = $invoice->getInvoiceUrl(); 
                 $payment->save();
-
+                Mail::to($user->email)->send(new CommandeCreated($commande,$paymentLink));
+             
+       
+           
                 return response()->json([
                     'message' => 'Commande créée avec succès. Veuillez procéder au paiement.',
                     'payment_link' => $paymentLink,
@@ -148,7 +163,7 @@ class CommandeController extends Controller
                 return response()->json([
                     'message' => 'Erreur lors de la création de la facture de paiement.',
                     'error' => $invoice->response_text,
-                    'montant_total' => $montantTotal // Ajoutez le montant total
+                    'montant_total' => $montantTotal 
                 ], 500);
             }
         }
@@ -166,8 +181,40 @@ class CommandeController extends Controller
     }
 }
 
-    
-    
+  
+public function sendCommandeInfo($commandeId)
+{
+    $commande = Commande::with('produits.user')->find($commandeId);
+
+    if (!$commande) {
+        return response()->json(['message' => 'Commande non trouvée.'], 404);
+    }
+
+    // Récupérer les utilisateurs uniques ayant ajouté les produits commandés
+    $utilisateurs = $commande->produits->pluck('user_id')->unique();
+
+    foreach ($utilisateurs as $userId) {
+        // Récupérer l'objet utilisateur complet
+        $user = User::find($userId);
+
+        if (!$user) {
+            continue; 
+        }
+
+        // Filtrer les produits pour l'utilisateur actuel
+        $produitsUser = $commande->produits->filter(function($produit) use ($userId) {
+            return $produit->user_id == $userId;
+        });
+
+        // Calculer le montant total pour les produits de cet utilisateur
+        $montantTotal = $produitsUser->sum(function($produit) {
+            return $produit->pivot->quantite * $produit->prix;
+        });
+
+        // Envoyer l'e-mail à l'utilisateur actuel
+        Mail::to($user->email)->send(new CommandeInfo($commande, $produitsUser, $montantTotal));
+    }
+}
     
 
     
@@ -264,28 +311,51 @@ public function AfficherCommandes()
 
 //supprimer un produit au Commande
 
-public function afficherCommande(Request $request)
-{
-    $Commande = Commande::where('user_id', $request->user()->id)
-                    ->where('etat_commande', 'en cours')
-                    ->first();
+public function AfficherMesCommande($id) {
+    $user = Auth::user();
 
-    if (!$Commande) {
-        return response()->json(['error' => 'Commande non trouvé.'], 404);
-    }
+    // Récupérer les IDs des produits ajoutés par l'utilisateur connecté
+    $ProduitUser = $user->produits->pluck('id');
 
-    $montantTotal = $Commande->calculerMontantTotal();
+    // Récupérer les commandes associées aux produits ajoutés par cet utilisateur
+    $commandes = Commande::whereHas('produits', function($query) use ($ProduitUser) {
+        $query->whereIn('produit_id', $ProduitUser);
+    })->with('produits')->get();
 
+    // Retourner les commandes sous forme de JSON
     return response()->json([
-        'Commande' => $Commande,
-        'montant_total' => $montantTotal
-    ], 200);
+        'message' => 'Liste de mes commandes',
+        'commandes' => $commandes
+    ]);
 }
-public function supprimerCommande(Request $request,$id){
-   $Commande = Commande::findOrFail($id)->delete();
-   return response()->json([
-    'commande'=> $Commande,
-   ],200);
+public function TraiterCommande(Request $request,$id){
+$commande=Commande::find($id);
+if(!$commande){
+    return response()->json([
+        'message'=>'commande non trouvée'
+    ],404);
+}
+$request->validate([
+    'statut'=>'required|in:invalide,en_attente,en_cours,expediee,livree'
+]);
+$commande->statut=$request->statut;
+$commande->save();
+return response()->json([
+    'message'=>'le statut de la commande a été mis à jour avec succés.',
+    'statut'=>$commande->statut
+],200);
+}
+public function supprimerCommande($id){
+$commande=Commande::find($id);
+if(!$commande){
+    return response()->json([
+        'message'=>'Commande non trouvé.'
+    ],404);
+}
+$commande->delete();
+return response()->json([
+    'message'=>'Commande supprimé avec succés.'
+],200);
+}
 
-}
 }
