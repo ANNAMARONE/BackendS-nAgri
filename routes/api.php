@@ -35,6 +35,7 @@ Route::group(['middleware'=>'api',
     Route::get('/me',[AuthController::class,'me']);
     Route::post('/verifier-otp', [AuthController::class, 'verifyOtp']);
     
+    Route::post('/check-unique', [AuthController::class, 'checkUnique']);
 
 });
 
@@ -63,6 +64,9 @@ Route::get('/commentaire/{id}/reponses', [CommentaireController::class, 'Affiche
 
 //Athentification
 Route::middleware('auth.jwt')->group(function () {
+  Route::get('/mes-commandes', [CommandeController::class, 'index']);
+Route::post('/commander', [CommandeController::class, 'store']); 
+Route::post('/payment/callback', [CommandeController::class, 'handleCallback']);
   Route::post('/forums/{id}/commentaires', [CommentaireController::class, 'store']);
   Route::post('/commentaires/{id}/repondre', [CommentaireController::class, 'ReponseCommentaire']);
   Route::post('/produit/{id}/like', [ProduitController::class, 'likeProduct']);
@@ -73,8 +77,7 @@ Route::middleware('auth.jwt')->group(function () {
     Route::get('/utilisateurs', [UserController::class, 'index']);
     Route::get('/utilisateurs/{id}', [UserController::class, 'show']);
 //gestion des commandes 
-Route::get('/mes-commandes', [CommandeController::class, 'index']);
-Route::post('/commander', [CommandeController::class, 'store']); 
+
 Route::get('/commandes',[CommandeController::class,'AfficherMesCommande']);
 Route::delete('/commandes/{id}', [CommandeController::class, 'supprimerCommande']);
 Route::put('/commandes/{id}/traiter', [CommandeController::class, 'TraiterCommande']);

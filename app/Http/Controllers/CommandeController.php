@@ -10,6 +10,7 @@ use App\Mail\CommandeInfo;
 use Illuminate\Http\Request;
 use App\Mail\CommandeCreated;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Paydunya\Checkout\CheckoutInvoice;
@@ -181,7 +182,17 @@ class CommandeController extends Controller
     }
 }
 
-  
+public function handleCallback(Request $request) {
+    // Traitez les données de la callback ici
+    // Par exemple, vérifier l'état du paiement
+    $data = $request->all();
+
+    // Vérifiez si les données sont bien reçues
+    Log::info('Callback reçu:', $data);
+
+    return response()->json(['status' => 'success']);
+}
+
 public function sendCommandeInfo($commandeId)
 {
     $commande = Commande::with('produits.user')->find($commandeId);

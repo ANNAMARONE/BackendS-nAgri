@@ -117,13 +117,14 @@ $validator->sometimes('region', 'required|in:Dakar,Diourbel,Fatick,Kaffrine,Kaol
         $otp = $request->input('otp');
     
         // Vérifier si l'OTP correspond à celui en cache
-        if (Cache::get("otp:$email") !== $otp) {
+        $cachedOtp = Cache::get("otp:$email");
+        if ($cachedOtp !== $otp) {
             return response()->json(['error' => 'L\'OTP est invalide ou a expiré'], 400);
         }
     
         // Si l'OTP est correct, mettre à jour le statut de l'utilisateur
         $user = User::where('email', $email)->first();
-        
+    
         if (!$user) {
             return response()->json(['error' => 'Utilisateur non trouvé'], 404);
         }
@@ -132,8 +133,14 @@ $validator->sometimes('region', 'required|in:Dakar,Diourbel,Fatick,Kaffrine,Kaol
         $user->statut = true; // Activer le compte
         $user->save();
     
+        // Effacer l'OTP du cache
+        Cache::forget("otp:$email");
+    
+      
+    
         return response()->json(['message' => 'OTP vérifié avec succès, compte activé'], 200);
     }
+    
     
 
     private function sendSms($telephone)
@@ -194,7 +201,15 @@ $validator->sometimes('region', 'required|in:Dakar,Diourbel,Fatick,Kaffrine,Kaol
             'expires_in'=>jwtAuth::factory()->getTTL()*60]);
     }
 
-  
+    public function checkUnique(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|unique:users,email', 
+        ]);
+    
+        return response()->json(['message' => 'Email unique'], 200);
+    }
+    
 
     //=================================================
     public function updateProfile(Request $request)
