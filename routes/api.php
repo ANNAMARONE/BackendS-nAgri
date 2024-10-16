@@ -64,6 +64,7 @@ Route::get('/commentaire/{id}/reponses', [CommentaireController::class, 'Affiche
 
 //Athentification
 Route::middleware('auth.jwt')->group(function () {
+  Route::delete('/mes-commandes/{id}', [CommandeController::class, 'destroy']);
   Route::get('/mes-commandes', [CommandeController::class, 'index']);
 Route::post('/commander', [CommandeController::class, 'store']); 
 Route::post('/payment/callback', [CommandeController::class, 'handleCallback']);
@@ -72,13 +73,14 @@ Route::post('/payment/callback', [CommandeController::class, 'handleCallback']);
   Route::post('/produit/{id}/like', [ProduitController::class, 'likeProduct']);
   Route::post('/commentaires/{id}/like', [CommentaireController::class, 'addLike']);   
   Route::post('/ajout_forums', [ForumController::class,'store']);
-  Route::post('/user/profile', [AuthController::class, 'updateProfile']);       
+  Route::post('/user/profile', [AuthController::class, 'updateProfile']); 
+  Route::get('/commandes',[CommandeController::class,'AfficherMesCommande']);      
   Route::middleware(['role:admin|producteur'])->group(function () {
     Route::get('/utilisateurs', [UserController::class, 'index']);
     Route::get('/utilisateurs/{id}', [UserController::class, 'show']);
 //gestion des commandes 
 
-Route::get('/commandes',[CommandeController::class,'AfficherMesCommande']);
+
 Route::delete('/commandes/{id}', [CommandeController::class, 'supprimerCommande']);
 Route::put('/commandes/{id}/traiter', [CommandeController::class, 'TraiterCommande']);
 Route::get('payment/success/{commande}', [CommandeController::class, 'success'])->name('payment.success');

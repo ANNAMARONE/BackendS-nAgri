@@ -32,6 +32,10 @@ class Produit extends Model
                     ->withTimestamps();
     }
     
-    
+    public function decrementerQuantite($quantite)
+    {
+        $this->quantite -= $quantite;
+        $this->save();
+    }
 
 }

@@ -10,9 +10,12 @@ class Commande extends Model
     use HasFactory;
 
     protected $guarded = [];
+  
     public function produits()
     {
-        return $this->belongsToMany(Produit::class, 'commande_produit')->withPivot('quantite');
+        return $this->belongsToMany(Produit::class, 'commande_produit')
+                    ->withPivot('quantite', 'montant')
+                    ->withTimestamps();
     }
     
     public function calculerMontantTotal()

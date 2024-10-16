@@ -25,24 +25,46 @@ class CommandeController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-       $user=Auth::user();
-       //récuppérer les commandes faites par l'utilisateur connecté
-       $commande=Commande::where('user_id',$user->id)
-       ->with('produits')
-       ->get();
-       if($commande->isEmpty()){
-        return response()->json([
-            'message'=>'Aucune commande trouvée pour cet utilisateur.',
-            'commandes'=>[]
+{
+    try {
+        $user = Auth::user();
 
-        ],200);
-       }
-       return response()->json([
-        'message'=>'Liste de vos commandes',
-        'commandes'=>$commande
-       ],200);
+        // Vérifier si l'utilisateur est connecté
+        if (!$user) {
+            return response()->json([
+                'message' => 'Utilisateur non connecté.'
+            ], 401); // Non autorisé
+        }
+
+        // Récupérer les commandes faites par l'utilisateur connecté avec les produits associés
+        $commandes = Commande::where('user_id', $user->id)
+            ->with('produits') // Assurez-vous que cette relation est bien définie dans le modèle
+            ->get();
+
+        if ($commandes->isEmpty()) {
+            return response()->json([
+                'message' => 'Aucune commande trouvée pour cet utilisateur.',
+                'commandes' => []
+            ], 200);
+        }
+
+        // Retourner les commandes avec les produits associés
+        return response()->json([
+            'message' => 'Liste de vos commandes',
+            'commandes' => $commandes
+        ], 200);
+    } catch (\Exception $e) {
+        // Log de l'erreur pour le débogage
+        \Log::error('Erreur lors de la récupération des commandes: ' . $e->getMessage());
+
+        return response()->json([
+            'message' => 'Erreur lors de la récupération des commandes. Veuillez réessayer.'
+        ], 500); // Erreur interne du serveur
     }
+}
+
+
+    
     
 
     /**
@@ -82,7 +104,15 @@ class CommandeController extends Controller
             $produit = Produit::findOrFail($produitData['produit_id']);
             $quantite = $produitData['quantite'];
             $montantProduit = $produit->prix * $quantite;
-            
+        
+
+            // Vérifier si le stock est suffisant
+            if ($produit->quantite < $quantite) {
+                return response()->json(['message' => 'Quantité insuffisante pour le produit: ' . $produit->nom], 400);
+            }
+
+            // Décrémenter la quantité du produit
+            $produit->decrementerQuantite($quantite);
             // Ajouter le produit à la commande avec la quantité et le montant
             $commande->produits()->attach($produit->id, [
                 'quantite' => $quantite,
@@ -317,12 +347,30 @@ public function AfficherCommandes()
     return response()->json($commandes);
 }
 
+public function destroy($id)
+{
+    // Vérifiez si la commande existe
+    $commande = Commande::find($id);
 
+    if (!$commande) {
+        return response()->json(['message' => 'Commande non trouvée.'], 404);
+    }
+
+    // Vérifiez si l'utilisateur connecté est le propriétaire de la commande
+    if ($commande->user_id !== Auth::id()) {
+        return response()->json(['message' => 'Vous n\'êtes pas autorisé à supprimer cette commande.'], 403);
+    }
+
+    // Supprimez la commande
+    $commande->delete();
+
+    return response()->json(['message' => 'Commande supprimée avec succès.'], 200);
+}
 
 
 //supprimer un produit au Commande
 
-public function AfficherMesCommande($id) {
+public function AfficherMesCommande() {
     $user = Auth::user();
 
     // Récupérer les IDs des produits ajoutés par l'utilisateur connecté
