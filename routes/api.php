@@ -74,7 +74,13 @@ Route::post('/payment/callback', [CommandeController::class, 'handleCallback']);
   Route::post('/commentaires/{id}/like', [CommentaireController::class, 'addLike']);   
   Route::post('/ajout_forums', [ForumController::class,'store']);
   Route::post('/user/profile', [AuthController::class, 'updateProfile']); 
-  Route::get('/commandes',[CommandeController::class,'AfficherMesCommande']);      
+  Route::get('/commandes',[CommandeController::class,'AfficherMesCommande']);
+  // gestion commande d'un client
+  Route::put('commandes/{id}/status', [CommandeController::class, 'updateStatus']);
+
+
+
+
   Route::middleware(['role:admin|producteur'])->group(function () {
     Route::get('/utilisateurs', [UserController::class, 'index']);
     Route::get('/utilisateurs/{id}', [UserController::class, 'show']);
@@ -85,6 +91,7 @@ Route::delete('/commandes/{id}', [CommandeController::class, 'supprimerCommande'
 Route::put('/commandes/{id}/traiter', [CommandeController::class, 'TraiterCommande']);
 Route::get('payment/success/{commande}', [CommandeController::class, 'success'])->name('payment.success');
 Route::get('payment/cancel/{commande}', [CommandeController::class, 'cancel'])->name('payment.cancel');
+
     //gestion des produits
   Route::get('afficher_produitParUser',[ProduitController::class,'AfficheProduitParUser']);
   Route::post('/Ajouter_produits', [ProduitController::class,'store']);

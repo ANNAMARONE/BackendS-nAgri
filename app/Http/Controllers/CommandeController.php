@@ -416,5 +416,22 @@ return response()->json([
     'message'=>'Commande supprimé avec succés.'
 ],200);
 }
+// permettre un client de modifier c'est commandes
+public function updateStatus(Request $request, $id)
+{
+    Log::info("Tentative de mise à jour du statut de la commande ID: $id"); 
+    $commande = Commande::find($id);
+
+    $request->validate([
+        'status_de_commande' => 'required|in:invalide,en_attente,en_cours,expediee,livree',
+    ]);
+    
+    $commande->status_de_commande = $request->status_de_commande;
+    $commande->save();
+
+    return response()->json(['message' => 'Statut de la commande mis à jour avec succès']);
+}
+
+
 
 }
