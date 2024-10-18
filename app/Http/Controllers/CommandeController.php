@@ -376,17 +376,29 @@ public function AfficherMesCommande() {
     // Récupérer les IDs des produits ajoutés par l'utilisateur connecté
     $ProduitUser = $user->produits->pluck('id');
 
-    // Récupérer les commandes associées aux produits ajoutés par cet utilisateur
-    $commandes = Commande::whereHas('produits', function($query) use ($ProduitUser) {
-        $query->whereIn('produit_id', $ProduitUser);
-    })->with('produits')->get();
+    // Vérifier si l'utilisateur a des produits
+    if ($ProduitUser->isEmpty()) {
+        return response()->json([
+            'message' => 'Aucune commande trouvée',
+            'commandes' => []
+        ]);
+    }
+
+    // Récupérer les commandes dont le statut est 'en_attente' et qui contiennent les produits de l'utilisateur
+    $commandes = Commande::where('status_de_commande', 'en_cours') // Filtrer par statut
+        ->whereHas('produits', function($query) use ($ProduitUser) {
+            $query->whereIn('produit_id', $ProduitUser);
+        })
+        ->with('produits') // Charger les produits associés
+        ->get();
 
     // Retourner les commandes sous forme de JSON
     return response()->json([
-        'message' => 'Liste de mes commandes',
+        'message' => 'Liste de mes commandes en attente',
         'commandes' => $commandes
     ]);
 }
+
 public function TraiterCommande(Request $request,$id){
 $commande=Commande::find($id);
 if(!$commande){
@@ -432,6 +444,34 @@ public function updateStatus(Request $request, $id)
     return response()->json(['message' => 'Statut de la commande mis à jour avec succès']);
 }
 
+//historique des commande du producteur connecter
+public function AfficherCommandesProduitsUser() {
+    $user = Auth::user();
+
+    // Récupérer les IDs des produits ajoutés par l'utilisateur connecté
+    $produitUserIds = $user->produits->pluck('id');
+
+    // Vérifier si l'utilisateur a des produits
+    if ($produitUserIds->isEmpty()) {
+        return response()->json([
+            'message' => 'Aucune commande trouvée.',
+            'commandes' => []
+        ]);
+    }
+
+    // Récupérer toutes les commandes contenant les produits de l'utilisateur
+    $commandes = Commande::whereHas('produits', function($query) use ($produitUserIds) {
+        $query->whereIn('produit_id', $produitUserIds);
+    })
+    ->with('produits') // Charger les produits associés
+    ->get();
+
+    // Retourner les commandes sous forme de JSON
+    return response()->json([
+        'message' => 'Liste des commandes concernant vos produits',
+        'commandes' => $commandes
+    ]);
+}
 
 
 }

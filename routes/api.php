@@ -24,6 +24,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\CommentaireController;
 use App\Http\Controllers\CategorieProduitController;
 use App\Http\Controllers\CategorieRessourceController;
+use App\Http\Controllers\StatisticsController;
 
 Route::group(['middleware'=>'api',
 'prefix'=> 'auth',
@@ -85,8 +86,8 @@ Route::post('/payment/callback', [CommandeController::class, 'handleCallback']);
     Route::get('/utilisateurs', [UserController::class, 'index']);
     Route::get('/utilisateurs/{id}', [UserController::class, 'show']);
 //gestion des commandes 
-
-
+route::get('/statistics', [StatisticsController::class, 'index']);
+route::get('/historiqueCommande',[CommandeController::class,'AfficherCommandesProduitsUser']);
 Route::delete('/commandes/{id}', [CommandeController::class, 'supprimerCommande']);
 Route::put('/commandes/{id}/traiter', [CommandeController::class, 'TraiterCommande']);
 Route::get('payment/success/{commande}', [CommandeController::class, 'success'])->name('payment.success');

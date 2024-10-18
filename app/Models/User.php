@@ -16,7 +16,7 @@ class User extends Authenticatable implements JWTSubject , MustVerifyEmail
     use HasFactory, Notifiable;
     use HasRoles;
 function produits(){
-    return $this->hasMany(produit::class,'user_id');
+    return $this->hasMany(Produit::class,'user_id');
 }
 public function commentairs(){
     return $this->hasMany(Commentaire::class);
