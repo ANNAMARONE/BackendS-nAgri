@@ -21,10 +21,11 @@ use App\Http\Controllers\RessourceController;
 use App\Http\Controllers\SmsTwilioController;
 use App\Http\Controllers\ComentaireController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\CommentaireController;
+use App\Http\Controllers\StatisticsControllerAmin;
 use App\Http\Controllers\CategorieProduitController;
 use App\Http\Controllers\CategorieRessourceController;
-use App\Http\Controllers\StatisticsController;
 
 Route::group(['middleware'=>'api',
 'prefix'=> 'auth',
@@ -85,6 +86,7 @@ Route::post('/payment/callback', [CommandeController::class, 'handleCallback']);
   Route::middleware(['role:admin|producteur'])->group(function () {
     Route::get('/utilisateurs', [UserController::class, 'index']);
     Route::get('/utilisateurs/{id}', [UserController::class, 'show']);
+    
 //gestion des commandes 
 route::get('/statistics', [StatisticsController::class, 'index']);
 route::get('/historiqueCommande',[CommandeController::class,'AfficherCommandesProduitsUser']);
@@ -117,6 +119,8 @@ Route::get('payment/cancel/{commande}', [CommandeController::class, 'cancel'])->
   
   // Routes accessibles uniquement aux administrateurs
   Route::middleware(['role:admin'])->group(function () {
+    Route::get('/statistiquesAdmin', [StatisticsControllerAmin::class, 'index']);
+    Route::get('/EvolutionCommande',[StatisticsControllerAmin::class,'evolutionMontantCommandes']);
     //gestion article
       Route::post('/modifier_Article/{id}', [ArticleController::class,'update']);
     Route::delete('supprimer_article/{id}', [ArticleController::class,'destroy']);

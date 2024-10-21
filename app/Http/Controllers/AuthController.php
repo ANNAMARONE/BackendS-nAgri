@@ -130,7 +130,7 @@ $validator->sometimes('region', 'required|in:Dakar,Diourbel,Fatick,Kaffrine,Kaol
         }
     
         // Mettre à jour le statut pour valider l'utilisateur
-        $user->statut = true; // Activer le compte
+        $user->statut = true; 
         $user->save();
     
         // Effacer l'OTP du cache

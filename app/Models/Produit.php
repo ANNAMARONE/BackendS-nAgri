@@ -17,7 +17,7 @@ class Produit extends Model
   // Dans le modèle Produit
   public function producteur()
   {
-      return $this->belongsTo(User::class, 'producteur_id'); // Assurez-vous que 'producteur_id' est la bonne clé étrangère
+      return $this->belongsTo(User::class, 'producteur_id'); 
   }
 
     

@@ -177,7 +177,7 @@ class CommandeController extends Controller
             if ($invoice->create()) {
                 $paymentLink = $invoice->getInvoiceUrl();
 
-                // Mettez à jour le paiement avec le lien de transaction
+                // Mettez à jour le paiem   ent avec le lien de transaction
                 $payment->transaction_id = $invoice->getInvoiceUrl(); 
                 $payment->save();
                 Mail::to($user->email)->send(new CommandeCreated($commande,$paymentLink));
@@ -459,19 +459,43 @@ public function AfficherCommandesProduitsUser() {
         ]);
     }
 
-    // Récupérer toutes les commandes contenant les produits de l'utilisateur
+    // Récupérer toutes les commandes contenant les produits de l'utilisateur et inclure les informations du client
     $commandes = Commande::whereHas('produits', function($query) use ($produitUserIds) {
         $query->whereIn('produit_id', $produitUserIds);
     })
-    ->with('produits') // Charger les produits associés
+    ->with(['produits', 'user']) 
     ->get();
+
+    // Formatage des commandes pour inclure les informations du client
+    $commandesFormatees = $commandes->map(function($commande) {
+        return [
+            'id' => $commande->id,
+            'status_de_commande' => $commande->status_de_commande,
+            'date' => $commande->created_at->toDateString(),
+            'client' => [
+                'nom' => $commande->user->name, 
+                'email' => $commande->user->email,
+                'telephone' => $commande->user->telephone,
+                'adresse'=>$commande->user->adresse
+            ],
+            'produits' => $commande->produits->map(function($produit) {
+                return [
+                    'id' => $produit->id,
+                    'libelle' => $produit->libelle,
+                    'prix' => $produit->prix,
+                    'image' => $produit->image
+                ];
+            })
+        ];
+    });
 
     // Retourner les commandes sous forme de JSON
     return response()->json([
         'message' => 'Liste des commandes concernant vos produits',
-        'commandes' => $commandes
+        'commandes' => $commandesFormatees
     ]);
 }
+
 
 
 }
