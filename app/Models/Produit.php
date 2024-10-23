@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Panier;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -37,5 +38,30 @@ class Produit extends Model
         $this->quantite -= $quantite;
         $this->save();
     }
+// gestion stock des produit
+
+// ajouter stock
+public function ajouterStock($quantité){
+    $this->quantite+=$quantité;
+    $this->save();
+}
+
+// modifier l'stock
+
+public function modifierStock($quantite)
+{
+    // Logique pour modifier le stock
+    if ($quantite <= 0) {
+        throw new Exception('La quantité doit être supérieure à zéro.');
+    }
+
+    if ($this->quantite < $quantite) {
+        throw new Exception('Quantité insuffisante en stock.');
+    }
+
+    // Retirer la quantité du stock
+    $this->quantite -= $quantite;
+    $this->save();
+}
 
 }

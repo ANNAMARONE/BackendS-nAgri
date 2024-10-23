@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\StoreproduitRequest;
 use App\Http\Requests\UpdateproduitRequest;
+use Exception;
 
 class ProduitController extends Controller
 {
@@ -199,5 +200,55 @@ public function AfficheProduitParUser(Request $request){
         'likes' => $produit->likes
     ]);
 }
+ public function ajouterStock(Request $request,$id){
 
+    // Validation des données
+    $request->validate([
+        'quantite' => 'required|integer|min:1',
+    ]);
+
+    // Trouver le produit par ID
+    $produit = Produit::find($id);
+    if (!$produit) {
+        return response()->json(['message' => 'Produit non trouvé.'], 404);
+    }
+    $produit->ajouterStock($request->input(('quantite')));
+
+    return response()->json(['message' => 'Stock ajouté avec succès.', 'produit' => $produit]);
+ }
+ public function retirerStock(Request $request, $id)
+ {
+     // Récupérer le produit par son ID
+     $produit = Produit::find($id);
+     if (!$produit) {
+         return response()->json(['message' => 'Produit non trouvé.'], 404);
+     }
+
+     try {
+         // Appeler la méthode modifierStock sur l'instance du produit
+         $produit->modifierStock($request->input('quantite'));
+         return response()->json(['message' => 'Stock retiré avec succès.', 'produit' => $produit]);
+     } catch (Exception $e) {
+         return response()->json(['message' => $e->getMessage()], 400);
+     }
+ }
+ 
+ public function AfficheAllProduitUser(Request $request)
+ {
+     if (!$request->user()) {
+         return response()->json(['error' => 'Veuillez vous connecter.'], 401);
+     }
+ 
+     $user = auth()->user();
+ 
+     // Utilisez get() pour exécuter la requête et récupérer les produits
+     $produits = Produit::where('user_id', $user->id)->get();
+ 
+     if ($produits->isEmpty()) {
+         return response()->json(['message' => 'Aucun produit trouvé.'], 404);
+     }
+ 
+     return response()->json($produits, 200);
+ }
+ 
 }

@@ -86,7 +86,9 @@ Route::post('/payment/callback', [CommandeController::class, 'handleCallback']);
   Route::middleware(['role:admin|producteur'])->group(function () {
     Route::get('/utilisateurs', [UserController::class, 'index']);
     Route::get('/utilisateurs/{id}', [UserController::class, 'show']);
-    
+    Route::post('ajouterStock/{id}',[ProduitController::class,'ajouterStock']);
+    Route::post('modifierStock/{id}',[ProduitController::class,'retirerStock']);
+    Route::get('/afficherProduit',[ProduitController::class,'AfficheAllProduitUser']);
 //gestion des commandes 
 route::get('/statistics', [StatisticsController::class, 'index']);
 route::get('/historiqueCommande',[CommandeController::class,'AfficherCommandesProduitsUser']);
