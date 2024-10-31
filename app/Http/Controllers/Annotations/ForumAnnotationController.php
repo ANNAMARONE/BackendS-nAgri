@@ -26,41 +26,7 @@ namespace App\Http\Controllers\Annotations ;
  *
 
  * @OA\GET(
- *     path="/api/commentaires/{id}",
- *     summary="lister les commentaires d'un forum",
- *     description="",
- *         security={
- *    {       "BearerAuth": {}}
- *         },
- * @OA\Response(response="200", description="OK"),
- * @OA\Response(response="404", description="Not Found"),
- * @OA\Response(response="500", description="Internal Server Error"),
- *     @OA\Parameter(in="path", name="id", required=false, @OA\Schema(type="string")
- * ),
- *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
- * ),
- *     tags={"Forum"},
-*),
-
-
- * @OA\GET(
- *     path="/api/forums",
- *     summary="afficher la liste des forum",
- *     description="",
- *         security={
- *    {       "BearerAuth": {}}
- *         },
- * @OA\Response(response="200", description="OK"),
- * @OA\Response(response="404", description="Not Found"),
- * @OA\Response(response="500", description="Internal Server Error"),
- *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
- * ),
- *     tags={"Forum"},
-*),
-
-
- * @OA\GET(
- *     path="/api/forum/{id}",
+ *     path="/api/forums/{id}/commentaires",
  *     summary="voire detail d'un forum",
  *     description="",
  *         security={
@@ -84,6 +50,54 @@ namespace App\Http\Controllers\Annotations ;
  *             ),
  *         ),
  *     ),
+ *     tags={"Forum"},
+*),
+
+
+ * @OA\GET(
+ *     path="/api/forum/{id}",
+ *     summary="détail forum",
+ *     description="",
+ *         security={
+ *    {       "BearerAuth": {}}
+ *         },
+ * @OA\Response(response="200", description="OK"),
+ * @OA\Response(response="404", description="Not Found"),
+ * @OA\Response(response="500", description="Internal Server Error"),
+ *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+ * ),
+ *     tags={"Forum"},
+*),
+
+
+ * @OA\GET(
+ *     path="/api/forums/{id}",
+ *     summary="afficher les commentaire d'un forum",
+ *     description="",
+ *         security={
+ *    {       "BearerAuth": {}}
+ *         },
+ * @OA\Response(response="200", description="OK"),
+ * @OA\Response(response="404", description="Not Found"),
+ * @OA\Response(response="500", description="Internal Server Error"),
+ *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+ * ),
+ *     tags={"Forum"},
+*),
+
+
+ * @OA\GET(
+ *     path="/api/forums",
+ *     summary="afficher la liste des forum",
+ *     description="",
+ *         security={
+ *    {       "BearerAuth": {}}
+ *         },
+ * @OA\Response(response="200", description="OK"),
+ * @OA\Response(response="404", description="Not Found"),
+ * @OA\Response(response="500", description="Internal Server Error"),
+ *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+ * ),
  *     tags={"Forum"},
 *),
 

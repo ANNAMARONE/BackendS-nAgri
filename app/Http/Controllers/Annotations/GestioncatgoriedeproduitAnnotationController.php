@@ -67,6 +67,7 @@ namespace App\Http\Controllers\Annotations ;
  *                 type="object",
  *                 properties={
  *                     @OA\Property(property="libelle", type="string"),
+ *                     @OA\Property(property="image", type="string"),
  *                 },
  *             ),
  *         ),
@@ -96,6 +97,7 @@ namespace App\Http\Controllers\Annotations ;
  *                 type="object",
  *                 properties={
  *                     @OA\Property(property="libelle", type="string"),
+ *                     @OA\Property(property="image", type="string", format="binary"),
  *                 },
  *             ),
  *         ),

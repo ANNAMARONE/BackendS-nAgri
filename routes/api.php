@@ -40,8 +40,6 @@ Route::group(['middleware'=>'api',
     Route::post('/check-unique', [AuthController::class, 'checkUnique']);
 
 });
-
-
 Route::get('/evenements',[EvenementController::class,'index']);
   
 Route::get('/evenement/{id}', [EvenementController::class,'show']);

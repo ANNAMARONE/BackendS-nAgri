@@ -42,15 +42,40 @@ class RoleController extends Controller
 
     // modifier un role dans mon api
     public function update(Request $request, $id)
-    {
-        $role = Role::find($id);
-        $role->name = $request->name;
-        $role->update();
-       return response()->json([
-        'message'=>'Le role a bien été modifié',
-        'role'=> $role
-       ],200);
+{
+    // Validation des données
+    $request->validate([
+        'name' => 'required|string|max:255', // Ajustez la validation selon vos besoins
+    ]);
+
+    // Recherche du rôle
+    $role = Role::find($id);
+    
+    // Vérification si le rôle existe
+    if (!$role) {
+        return response()->json([
+            'message' => 'Le rôle spécifié n\'existe pas.'
+        ], 404);
     }
+
+    // Rôles protégés que l'on ne peut pas modifier
+    $protectedRoles = ['admin', 'client', 'producteur'];
+    
+    if (in_array($role->name, $protectedRoles)) {
+        return response()->json([
+            'message' => 'Modification de ce rôle non autorisée.'
+        ], 403);
+    }
+
+    // Mise à jour du nom du rôle
+    $role->update(['name' => $request->name]);
+
+    return response()->json([
+        'message' => 'Le rôle a bien été modifié.',
+        'role' => $role
+    ], 200);
+}
+
 
 public function givePermissions(Request $request, $roleId)
 {

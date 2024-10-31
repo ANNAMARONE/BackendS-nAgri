@@ -23,6 +23,231 @@
         "multipart/form-data"
     ],
     "paths": {
+        "/api/EvolutionCommande": {
+            "get": {
+                "summary": "Evolution des commandes",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "admin statistique"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/statistiquesAdmin": {
+            "get": {
+                "summary": "information des donnée",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "admin statistique"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/statistics": {
+            "get": {
+                "summary": "statistique producteur",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "staque"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/utilisateurs/{id}": {
+            "get": {
+                "summary": "afficher les détail du producteur",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "gestion profile"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/utilisateurs": {
+            "get": {
+                "summary": "afficher les producteur",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "gestion profile"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
         "/api/user/profile": {
             "post": {
                 "summary": "modifier profile",
@@ -114,17 +339,17 @@
                                 }
                             },
                             "example": {
-                                "name": "",
+                                "name": "bachir lo",
                                 "profile": {
                                     "type": "string",
                                     "format": "binary"
                                 },
-                                "adresse": "",
-                                "telephone": "",
-                                "email": "",
-                                "role": "",
-                                "acteur": "",
-                                "region": ""
+                                "adresse": "dakar",
+                                "telephone": "7862336429",
+                                "email": "lomouhamedelbachir@gmail.com",
+                                "role": "producteur",
+                                "acteur": "Jardiniers",
+                                "region": "Dakar"
                             }
                         }
                     }
@@ -778,7 +1003,104 @@
                 ]
             }
         },
+        "/api/profil": {
+            "get": {
+                "summary": "afficher profile",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "gestion utilisateur"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
         "/api/users/{id}": {
+            "post": {
+                "summary": "supprimer un utilisateur",
+                "description": "",
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "gestion utilisateur"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            },
             "get": {
                 "summary": "affiché les détail d'un utilisateur",
                 "description": "",
@@ -877,6 +1199,114 @@
                         "name": "id",
                         "type": "string"
                     },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/users/{id}/deactivate": {
+            "post": {
+                "summary": "déactiver un utilisateur",
+                "description": "",
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "gestion utilisateur"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/users/{id}/activate": {
+            "post": {
+                "summary": "activé un utilisateur",
+                "description": "",
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "gestion utilisateur"
+                ],
+                "parameters": [
                     {
                         "in": "header",
                         "name": "User-Agent",
@@ -1006,7 +1436,106 @@
                 ]
             }
         },
-        "/api/ajouter_commentaire/{id}": {
+        "/api/commentaire/{id}/reponses": {
+            "get": {
+                "summary": "reponse commentaire",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "commentaire"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/commentaires/{id}/repondre": {
+            "post": {
+                "summary": "Repondre a un commentaire",
+                "description": "",
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "commentaire"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/forums/{id}/commentaires": {
             "post": {
                 "summary": "ajouter un commentaire",
                 "description": "",
@@ -1080,492 +1609,7 @@
                         }
                     }
                 }
-            }
-        },
-        "/api/commandes": {
-            "get": {
-                "summary": "afficher commande",
-                "description": "",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "gestion panier"
-                ],
-                "parameters": [
-                    {
-                        "in": "header",
-                        "name": "User-Agent",
-                        "type": "string"
-                    }
-                ]
-            }
-        },
-        "/api/panier/expedier": {
-            "post": {
-                "summary": "expedier mon panier",
-                "description": "",
-                "responses": {
-                    "201": {
-                        "description": "Created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "gestion panier"
-                ],
-                "parameters": [
-                    {
-                        "in": "header",
-                        "name": "User-Agent",
-                        "type": "string"
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "etat_commande": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "example": {
-                                "etat_commande": "expédiée"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/panier/valider": {
-            "post": {
-                "summary": "valider mon panier",
-                "description": "",
-                "responses": {
-                    "201": {
-                        "description": "Created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "gestion panier"
-                ],
-                "parameters": [
-                    {
-                        "in": "header",
-                        "name": "User-Agent",
-                        "type": "string"
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "etat_commande": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "example": {
-                                "etat_commande": "validée"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/panier/{id}": {
-            "put": {
-                "summary": "modifier un panier",
-                "description": "",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "gestion panier"
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "type": "string"
-                    },
-                    {
-                        "in": "header",
-                        "name": "User-Agent",
-                        "type": "string"
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "quantite": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "example": {
-                                "quantite": ""
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/panier/produit/{id}": {
-            "delete": {
-                "summary": "supprimer un produit au panier",
-                "description": "",
-                "responses": {
-                    "204": {
-                        "description": "Deleted successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "gestion panier"
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "type": "string"
-                    },
-                    {
-                        "in": "header",
-                        "name": "User-Agent",
-                        "type": "string"
-                    }
-                ]
-            }
-        },
-        "/api/ajouterProduitAuPanier": {
-            "post": {
-                "summary": "ajouter un produit au panier",
-                "description": "",
-                "responses": {
-                    "201": {
-                        "description": "Created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "gestion panier"
-                ],
-                "parameters": [
-                    {
-                        "in": "header",
-                        "name": "User-Agent",
-                        "type": "string"
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "produit_id": {
-                                        "type": "string"
-                                    },
-                                    "quantite": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "example": {
-                                "produit_id": "",
-                                "quantite": ""
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/commentaires/{id}": {
-            "get": {
-                "summary": "lister les commentaires d'un forum",
-                "description": "",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "Forum"
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "type": "string"
-                    },
-                    {
-                        "in": "header",
-                        "name": "User-Agent",
-                        "type": "string"
-                    }
-                ]
-            }
-        },
-        "/api/forums": {
-            "get": {
-                "summary": "afficher la liste des forum",
-                "description": "",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "Forum"
-                ],
-                "parameters": [
-                    {
-                        "in": "header",
-                        "name": "User-Agent",
-                        "type": "string"
-                    }
-                ]
-            }
-        },
-        "/api/forum/{id}": {
+            },
             "get": {
                 "summary": "voire detail d'un forum",
                 "description": "",
@@ -1624,6 +1668,608 @@
                         }
                     }
                 }
+            }
+        },
+        "/api/commentaires/{id}/like": {
+            "post": {
+                "summary": "aimer un commentaire",
+                "description": "",
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "commentaire"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/historiqueCommande": {
+            "get": {
+                "summary": "historique",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "gestion  commander"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/payment/cancel/{commande}": {
+            "get": {
+                "summary": "annulé un payement",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "gestion  commander"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/payment/success/{commande}": {
+            "get": {
+                "summary": "payement avec succés",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "gestion  commander"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/commandes/{id}/traiter": {
+            "put": {
+                "summary": "traiter des commandes ",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "gestion  commander"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/mes-commandes": {
+            "get": {
+                "summary": "commande de l'utilisateur connecter",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "gestion  commander"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/commandes/{id}": {
+            "post": {
+                "summary": "supprimer un commande",
+                "description": "",
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "gestion  commander"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/commandes": {
+            "get": {
+                "summary": "commande du producteurs",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "gestion  commander"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/commander": {
+            "post": {
+                "summary": "ajouter une commande",
+                "description": "",
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "gestion  commander"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "montant_total": {
+                                        "type": "integer"
+                                    },
+                                    "produits": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "payment_method": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "montant_total": 250,
+                                "produits": [
+                                    {
+                                        "produit_id": 41,
+                                        "quantite": 2
+                                    },
+                                    {
+                                        "produit_id": 40,
+                                        "quantite": 1
+                                    }
+                                ],
+                                "payment_method": "en_ligne"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/forum/{id}": {
+            "get": {
+                "summary": "détail forum",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Forum"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/forums/{id}": {
+            "get": {
+                "summary": "afficher les commentaire d'un forum",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Forum"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/forums": {
+            "get": {
+                "summary": "afficher la liste des forum",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Forum"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
             }
         },
         "/api/modifier_forums/{id}": {
@@ -2134,9 +2780,7 @@
                         }
                     }
                 }
-            }
-        },
-        "/api/article": {
+            },
             "get": {
                 "summary": "afficher les articles",
                 "description": "",
@@ -3122,6 +3766,247 @@
                 ]
             }
         },
+        "/api/afficherProduit": {
+            "get": {
+                "summary": "afficher tout les produit de l'utilisateur connecter ",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Gestion produit"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/modifierStock/75": {
+            "post": {
+                "summary": "modifier l'stock d'un produit",
+                "description": "",
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Gestion produit"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "quantite": {
+                                        "type": "integer"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "quantite": 5
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/ajouterStock/75": {
+            "post": {
+                "summary": "ajoute stock d'un produit",
+                "description": "",
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Gestion produit"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "quantite": {
+                                        "type": "integer"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "quantite": 10
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/produit/{id}/like": {
+            "post": {
+                "summary": "aimer un produit",
+                "description": "",
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Gestion produit"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
         "/api/afficher_produitParUser": {
             "get": {
                 "summary": "afficher les produit de l'utilisateur connecter",
@@ -3336,11 +4221,6 @@
                 ],
                 "parameters": [
                     {
-                        "in": "path",
-                        "name": "id",
-                        "type": "string"
-                    },
-                    {
                         "in": "header",
                         "name": "User-Agent",
                         "type": "string"
@@ -3377,16 +4257,16 @@
                                 }
                             },
                             "example": {
-                                "libelle": "",
+                                "libelle": "cacao",
                                 "image": {
                                     "type": "string",
                                     "format": "binary"
                                 },
-                                "description": "",
-                                "quantite": "",
-                                "prix": "",
-                                "statut": "",
-                                "categorie_produit_id": ""
+                                "description": "Description du produit 5",
+                                "quantite": "5",
+                                "prix": "300",
+                                "statut": "en stock",
+                                "categorie_produit_id": "4"
                             }
                         }
                     }
@@ -3546,12 +4426,12 @@
                                 }
                             },
                             "example": {
-                                "libelle": "",
-                                "description": "",
-                                "quantite": "",
-                                "prix": "",
-                                "statut": "",
-                                "categorie_produit_id": "",
+                                "libelle": "tomat",
+                                "description": "bonjoure tomate",
+                                "quantite": "9",
+                                "prix": "300",
+                                "statut": "en stock",
+                                "categorie_produit_id": "4",
                                 "image": {
                                     "type": "string",
                                     "format": "binary"
@@ -3731,11 +4611,15 @@
                                 "properties": {
                                     "libelle": {
                                         "type": "string"
+                                    },
+                                    "image": {
+                                        "type": "string"
                                     }
                                 }
                             },
                             "example": {
-                                "libelle": ""
+                                "libelle": "",
+                                "image": ""
                             }
                         }
                     }
@@ -3802,11 +4686,19 @@
                                 "properties": {
                                     "libelle": {
                                         "type": "string"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
                                     }
                                 }
                             },
                             "example": {
-                                "libelle": ""
+                                "libelle": "jsqdksqkhd",
+                                "image": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
                             }
                         }
                     }
@@ -3858,9 +4750,9 @@
                 ]
             }
         },
-        "/api/auth/me": {
+        "/api/auth/verifier-otp": {
             "post": {
-                "summary": "me",
+                "summary": "verification par otp",
                 "description": "",
                 "responses": {
                     "201": {
@@ -3892,6 +4784,72 @@
                     },
                     "403": {
                         "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Authentification"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "otp": {
+                                        "type": "integer"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "email": "malcom70976@gmail.com",
+                                "otp": 630343
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/me": {
+            "get": {
+                "summary": "me",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "content": {
                             "application/json": {
                                 "schema": {},
@@ -4140,8 +5098,8 @@
                                 }
                             },
                             "example": {
-                                "email": "sarr@gmail.com",
-                                "password": "mame@1234"
+                                "email": "annamarone01@gmail.com",
+                                "password": "MARONE1234"
                             }
                         }
                     }

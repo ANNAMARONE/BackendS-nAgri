@@ -131,7 +131,7 @@ namespace App\Http\Controllers\Annotations ;
 
 
  * @OA\GET(
- *     path="/api/article",
+ *     path="/api/articles",
  *     summary="afficher les articles",
  *     description="",
  *         security={
