@@ -496,6 +496,17 @@ public function AfficherCommandesProduitsUser() {
     ]);
 }
 
+public function commandePourAdmin()
+{
+    $commandes = Commande::whereHas('produits') 
+        ->with('produits')
+        ->get();
+
+    return response()->json([
+        'message' => 'Liste de toutes les commandes',
+        'commandes' => $commandes
+    ]);
+}
 
 
 }

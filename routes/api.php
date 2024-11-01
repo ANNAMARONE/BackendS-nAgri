@@ -150,7 +150,8 @@ Route::get('payment/cancel/{commande}', [CommandeController::class, 'cancel'])->
     Route::post('/roles/{id}', [RoleController::class, 'update']);
     Route::delete('/roles/{id}', [RoleController::class, 'destroy']);
     Route::post('/roles/{id}/permission', [RoleController::class, 'givePermissions']);
-    
+    Route::get('/roles/{roleId}/permissions', [RoleController::class, 'getPermissions']);
+
     // Permissions
     Route::get('/permissions', [PermissionController::class, 'index']);
     Route::post('/permissions', [PermissionController::class, 'store']);
@@ -167,7 +168,7 @@ Route::delete('/supprimer_categorieProduit/{id}', [CategorieProduitController::c
 Route::get('/detail_categorieProduit/{id}', [CategorieProduitController::class,'show']);
 Route::post('/modifier_categorieRessource/{id}', [CategorieRessourceController::class,'update']);
 Route::delete('/supprimer_categorieRessource/{id}', [CategorieRessourceController::class,'destroy']);
-
+route::get('/toutlescommande',[CommandeController::class,'commandePourAdmin']);
   });
 });
 

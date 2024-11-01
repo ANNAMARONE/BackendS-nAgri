@@ -39,7 +39,21 @@ class RoleController extends Controller
        return response()->json(['message'=> 'Le role a bien été supprimé'],200);
     
     }
-
+    public function getPermissions($roleId)
+    {
+        $role = Role::findOrFail($roleId);
+        $permissions = $role->permissions;
+    
+        // Ajoutez ce log pour vérifier ce que vous récupérez
+        \Log::info('Permissions for role ID ' . $roleId . ': ', $permissions->toArray());
+    
+        return response()->json([
+            'status' => true,
+            'data' => $permissions,
+        ]);
+    }
+    
+    
     // modifier un role dans mon api
     public function update(Request $request, $id)
 {
@@ -84,7 +98,8 @@ public function givePermissions(Request $request, $roleId)
 
     // Valider la requête pour s'assurer que les permissions sont fournies
     $validatedData = Validator::make($request->all(), [
-        'permissionId' => 'required|integer|exists:permissions,id',
+        'permissionIds' => 'required|array',
+        'permissionIds.*' => 'integer|exists:permissions,id', 
     ]);
 
     if ($validatedData->fails()) {
@@ -95,18 +110,18 @@ public function givePermissions(Request $request, $roleId)
         ], 400);
     }
 
-    $permissionId = $validatedData->validated()['permissionId'];
+    $permissionIds = $validatedData->validated()['permissionIds'];
 
     try {
         // Trouver le rôle par ID
         $role = Role::findOrFail($roleId);
 
-        // Attacher la permission au rôle
-        $role->permissions()->syncWithoutDetaching([$permissionId]);
+        // Attacher les permissions au rôle
+        $role->permissions()->syncWithoutDetaching($permissionIds); // Utilisez le tableau
 
         return response()->json([
             'status' => true,
-            'message' => 'Permission successfully added'
+            'message' => 'Permissions successfully added'
         ], 200);
     } catch (\Exception $e) {
         // Log l'erreur et retourner une réponse d'erreur
@@ -114,11 +129,12 @@ public function givePermissions(Request $request, $roleId)
 
         return response()->json([
             'status' => false,
-            'message' => 'An error occurred while assigning the permission',
+            'message' => 'An error occurred while assigning the permissions',
             'error' => $e->getMessage()
         ], 500);
     }
 }
+
 
 
 }
