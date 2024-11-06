@@ -26,7 +26,7 @@ namespace App\Http\Controllers\Annotations ;
  *
 
  * @OA\GET(
- *     path="/api/profil",
+ *     path="/api/profil/{id}",
  *     summary="afficher profile",
  *     description="",
  *         security={

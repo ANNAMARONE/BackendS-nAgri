@@ -25,6 +25,22 @@ namespace App\Http\Controllers\Annotations ;
 
  *
 
+ * @OA\GET(
+ *     path="/api/roles/{roleId}/permissions",
+ *     summary="afficher les permission d'un role",
+ *     description="",
+ *         security={
+ *    {       "BearerAuth": {}}
+ *         },
+ * @OA\Response(response="200", description="OK"),
+ * @OA\Response(response="404", description="Not Found"),
+ * @OA\Response(response="500", description="Internal Server Error"),
+ *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+ * ),
+ *     tags={"gestion role"},
+*),
+
+
  * @OA\POST(
  *     path="/api/roles/{id}/permission",
  *     summary="Assigné un permission",

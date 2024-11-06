@@ -42,7 +42,7 @@ namespace App\Http\Controllers\Annotations ;
 
 
  * @OA\POST(
- *     path="/api/modifierStock/75",
+ *     path="/api/modifierStock/{id}",
  *     summary="modifier l'stock d'un produit",
  *     description="",
  *         security={
@@ -71,7 +71,7 @@ namespace App\Http\Controllers\Annotations ;
 
 
  * @OA\POST(
- *     path="/api/ajouterStock/75",
+ *     path="/api/ajouterStock/{id}",
  *     summary="ajoute stock d'un produit",
  *     description="",
  *         security={

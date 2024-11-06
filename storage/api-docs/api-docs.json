@@ -23,6 +23,89 @@
         "multipart/form-data"
     ],
     "paths": {
+        "/api/contact": {
+            "post": {
+                "summary": "contact",
+                "description": "",
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "contact"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "subject": {
+                                        "type": "string"
+                                    },
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "name": "Jean Dupont",
+                                "email": "jean.dupont@example.com",
+                                "subject": "Demande d'informations",
+                                "message": "Bonjour, j'aimerais obtenir plus d'informations sur vos services. Merci !"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/EvolutionCommande": {
             "get": {
                 "summary": "Evolution des commandes",
@@ -147,7 +230,7 @@
                     }
                 },
                 "tags": [
-                    "staque"
+                    "statistique producteur"
                 ],
                 "parameters": [
                     {
@@ -678,6 +761,51 @@
                 }
             }
         },
+        "/api/roles/{roleId}/permissions": {
+            "get": {
+                "summary": "afficher les permission d'un role",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "gestion role"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
         "/api/roles/{id}/permission": {
             "post": {
                 "summary": "Assigné un permission",
@@ -1003,7 +1131,7 @@
                 ]
             }
         },
-        "/api/profil": {
+        "/api/profil/{id}": {
             "get": {
                 "summary": "afficher profile",
                 "description": "",
@@ -1714,6 +1842,51 @@
                 },
                 "tags": [
                     "commentaire"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/toutlescommande": {
+            "get": {
+                "summary": "liste de tout les commandes",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "gestion  commander"
                 ],
                 "parameters": [
                     {
@@ -3811,7 +3984,7 @@
                 ]
             }
         },
-        "/api/modifierStock/75": {
+        "/api/modifierStock/{id}": {
             "post": {
                 "summary": "modifier l'stock d'un produit",
                 "description": "",
@@ -3882,7 +4055,7 @@
                 }
             }
         },
-        "/api/ajouterStock/75": {
+        "/api/ajouterStock/{id}": {
             "post": {
                 "summary": "ajoute stock d'un produit",
                 "description": "",
@@ -4750,6 +4923,65 @@
                 ]
             }
         },
+        "/api/check-unique": {
+            "post": {
+                "summary": "verifier si l'email est unique",
+                "description": "",
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Authentification"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "email",
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
         "/api/auth/verifier-otp": {
             "post": {
                 "summary": "verification par otp",
@@ -5098,8 +5330,8 @@
                                 }
                             },
                             "example": {
-                                "email": "annamarone01@gmail.com",
-                                "password": "MARONE1234"
+                                "email": "kaayentreprendre4@gmail.com",
+                                "password": "AMIE1234"
                             }
                         }
                     }
