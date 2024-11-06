@@ -11,6 +11,7 @@ use App\Http\Controllers\ForumController;
 use App\Http\Controllers\PanierController;
 use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PaytechController;
 use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\CinetPayController;
@@ -46,7 +47,7 @@ Route::get('/evenement/{id}', [EvenementController::class,'show']);
     //gestion article
 Route::get('/articles',[ArticleController::class,'index'])->name('articles');
  Route::get('/article/{id}', [ArticleController::class,'show']);
-
+Route ::Post('/contact',[ContactController::class,'store']);
 Route::get('/afficher_produit',[ProduitController::class,'index']);
 Route::get('/détail_produit/{id}', [ProduitController::class,'show']);
 Route::get('/categories/{id}/produits', [ProduitController::class, 'produitParCategorie']);
@@ -75,6 +76,7 @@ Route::post('/payment/callback', [CommandeController::class, 'handleCallback']);
   Route::post('/ajout_forums', [ForumController::class,'store']);
   Route::post('/user/profile', [AuthController::class, 'updateProfile']); 
   Route::get('/commandes',[CommandeController::class,'AfficherMesCommande']);
+  Route::put('/commandes/{id}/status', [CommandeController::class, 'updateStatus']);
   // gestion commande d'un client
   Route::put('commandes/{id}/status', [CommandeController::class, 'updateStatus']);
 
@@ -141,7 +143,7 @@ Route::get('payment/cancel/{commande}', [CommandeController::class, 'cancel'])->
     Route::post('/users/{id}/deactivate', [AdminController::class, 'deactivate']);
     Route::get('/users/{id}', [AdminController::class, 'show']);
     Route::delete('supprimer_forums/{id}', [ForumController::class,'destroy']);
-     Route::get('/profil', [AdminController::class,'show']);
+     Route::get('/profil/{id}', [AdminController::class,'show']);
     
     
     // Roles

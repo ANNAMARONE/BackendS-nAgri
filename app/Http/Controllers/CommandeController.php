@@ -499,7 +499,7 @@ public function AfficherCommandesProduitsUser() {
 public function commandePourAdmin()
 {
     $commandes = Commande::whereHas('produits') 
-        ->with('produits')
+        ->with('produits',"user")
         ->get();
 
     return response()->json([
