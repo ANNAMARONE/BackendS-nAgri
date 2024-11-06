@@ -13,8 +13,12 @@
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "paydunya/paydunya": "^1.0",
+        "predis/predis": "^2.2",
         "sadiqsalau/laravel-otp": "^1.0",
         "spatie/laravel-permission": "^6.9",
+        "srmklive/paypal": "^3.0",
+        "stripe/stripe-php": "^16.1",
         "twilio/sdk": "^7.16",
         "tymon/jwt-auth": "^2.1"
     },

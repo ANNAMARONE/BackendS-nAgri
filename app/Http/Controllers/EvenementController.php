@@ -102,43 +102,50 @@ class EvenementController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (!$request->user()) {
-            return response()->json(['error' => 'Veuillez vous connecter.'], 401);
-        }
-         $evenement=evenement::findOrFail($id);
-        $validator = Validator::make($request->all(), [
-            "libelle"=>'required|string|max:255',
-            "image"=>'sometimes|nullable|mimes:jpeg,jpg,png|max:2048',
-            "description"=>'required|string',
-            "lien"=>'required|string|max:255',
-            "date"=>'required|date|after_or_equal:today', 
-        ]);
-          // Si la validation échoue, retourner une réponse JSON avec les erreurs
-          if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 422);
-        }
-        $evenement->fill($request->except('image'));
-        if ($request->hasFile('image')) {
-            // Supprimer l'ancienne image si elle existe
-            if ($evenement->image && File::exists(storage_path('app/public/images/' . $evenement->image))) {
-                File::delete(storage_path('app/public/images/' . $evenement->image));
+
+        try {
+            if (!$request->user()) {
+                return response()->json(['error' => 'Veuillez vous connecter.'], 401);
+
+            }
+            $evenement = evenement::findOrFail($id);
+            $validator = Validator::make($request->all(), [
+                "libelle" => 'required|string|max:255',
+                "image" => 'sometimes|nullable|mimes:jpeg,jpg,png|max:2048',
+                "description" => 'required|string',
+                "lien" => 'required|string|max:255',
+                "date" => 'required|date|after_or_equal:today',
+            ]);
+    
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 422);
             }
     
-            $image = $request->file('image');
-            $filename = time() . '.' . $image->getClientOriginalExtension();
-            $path = $image->storeAs('images', $filename, 'public');
-            $evenement->image = $path;
+            $evenement->fill($request->except('image'));
+    
+            if ($request->hasFile('image')) {
+                if ($evenement->image && File::exists(storage_path('app/public/images/' . $evenement->image))) {
+                    File::delete(storage_path('app/public/images/' . $evenement->image));
+                }
+    
+                $image = $request->file('image');
+                $filename = time() . '.' . $image->getClientOriginalExtension();
+                $path = $image->storeAs('images', $filename, 'public');
+                $evenement->image = $path;
+            }
+    
+            $evenement->save();
+    
+            return response()->json([
+                'message' => 'Article mis à jour avec succès',
+                'article' => $evenement
+            ], 200);
+    
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Une erreur est survenue lors de la mise à jour de l\'événement', 'details' => $e->getMessage()], 500);
         }
-      
-        $evenement->save(); 
-        
-        return response()->json([
-            'message' => 'Article mis à jour avec succès',
-            'article' => $evenement
-        ], 200);
     }
+    
 
     /**
      * Remove the specified resource from storage.

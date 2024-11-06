@@ -25,6 +25,38 @@ namespace App\Http\Controllers\Annotations ;
 
  *
 
+ * @OA\GET(
+ *     path="/api/utilisateurs/{id}",
+ *     summary="afficher les détail du producteur",
+ *     description="",
+ *         security={
+ *    {       "BearerAuth": {}}
+ *         },
+ * @OA\Response(response="200", description="OK"),
+ * @OA\Response(response="404", description="Not Found"),
+ * @OA\Response(response="500", description="Internal Server Error"),
+ *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+ * ),
+ *     tags={"gestion profile"},
+*),
+
+
+ * @OA\GET(
+ *     path="/api/utilisateurs",
+ *     summary="afficher les producteur",
+ *     description="",
+ *         security={
+ *    {       "BearerAuth": {}}
+ *         },
+ * @OA\Response(response="200", description="OK"),
+ * @OA\Response(response="404", description="Not Found"),
+ * @OA\Response(response="500", description="Internal Server Error"),
+ *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+ * ),
+ *     tags={"gestion profile"},
+*),
+
+
  * @OA\POST(
  *     path="/api/user/profile",
  *     summary="modifier profile",

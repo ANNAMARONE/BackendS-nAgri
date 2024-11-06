@@ -70,7 +70,7 @@ class RessourceController extends Controller
             $image = $request->file('image');
             $filename = time() . '.' . $image->getClientOriginalExtension();
             $path = $image->storeAs('images', $filename, 'public');
-            $ressource->image = $filename;
+            $ressource->image = $path;
         }
     
         // Sauvegarde de la ressource

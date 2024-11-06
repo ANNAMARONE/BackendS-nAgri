@@ -126,7 +126,7 @@ class CategorieProduitController extends Controller
             $image = $request->file('image');
             $filename = time() . '.' . $image->getClientOriginalExtension();
             $path = $image->storeAs('images', $filename, 'public');
-            $categorieProduit->image = $filename;
+            $categorieProduit->image =  $path;
         // Mettre à jour la catégorie avec les nouvelles données
         $categorieProduit->save();
         // Retourner une réponse JSON avec un message de succès
