@@ -51,6 +51,7 @@ class RolesAndPermissionsSeeder extends Seeder
             $role->givePermissionTo('gestion_profil');
             $role->givePermissionTo('faire_un_payement');
             $role->givePermissionTo('voire_paiment');
+            $role->givePermissionTo('accéder_forum');
            $role = Role::create(['name' => 'producteur']);
            $role->givePermissionTo('gestion_produit');
            $role->givePermissionTo('gestion_commande');

@@ -26,8 +26,8 @@ namespace App\Http\Controllers\Annotations ;
  *
 
  * @OA\GET(
- *     path="/api/profil",
- *     summary="afficher profile",
+ *     path="/api/historiqueCommande",
+ *     summary="historique",
  *     description="",
  *         security={
  *    {       "BearerAuth": {}}
@@ -37,30 +37,13 @@ namespace App\Http\Controllers\Annotations ;
  * @OA\Response(response="500", description="Internal Server Error"),
  *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
  * ),
- *     tags={"gestion utilisateur"},
-*),
-
-
- * @OA\POST(
- *     path="/api/users/{id}",
- *     summary="supprimer un utilisateur",
- *     description="",
- *         security={
- *    {       "BearerAuth": {}}
- *         },
- * @OA\Response(response="201", description="Created successfully"),
- * @OA\Response(response="400", description="Bad Request"),
- * @OA\Response(response="401", description="Unauthorized"),
- * @OA\Response(response="403", description="Forbidden"),
- *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
- * ),
- *     tags={"gestion utilisateur"},
+ *     tags={"gestion  commander"},
 *),
 
 
  * @OA\GET(
- *     path="/api/users/{id}",
- *     summary="affiché les détail d'un utilisateur",
+ *     path="/api/payment/cancel/{commande}",
+ *     summary="annulé un payement",
  *     description="",
  *         security={
  *    {       "BearerAuth": {}}
@@ -68,36 +51,63 @@ namespace App\Http\Controllers\Annotations ;
  * @OA\Response(response="200", description="OK"),
  * @OA\Response(response="404", description="Not Found"),
  * @OA\Response(response="500", description="Internal Server Error"),
- *     @OA\Parameter(in="path", name="id", required=false, @OA\Schema(type="string")
- * ),
  *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
  * ),
- *     tags={"gestion utilisateur"},
+ *     tags={"gestion  commander"},
 *),
 
 
- * @OA\DELETE(
- *     path="/api/users/{id}",
- *     summary="supprimer un utilisateur",
+ * @OA\GET(
+ *     path="/api/payment/success/{commande}",
+ *     summary="payement avec succés",
  *     description="",
  *         security={
  *    {       "BearerAuth": {}}
  *         },
- * @OA\Response(response="204", description="Deleted successfully"),
- * @OA\Response(response="401", description="Unauthorized"),
- * @OA\Response(response="403", description="Forbidden"),
+ * @OA\Response(response="200", description="OK"),
  * @OA\Response(response="404", description="Not Found"),
- *     @OA\Parameter(in="path", name="id", required=false, @OA\Schema(type="string")
- * ),
+ * @OA\Response(response="500", description="Internal Server Error"),
  *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
  * ),
- *     tags={"gestion utilisateur"},
+ *     tags={"gestion  commander"},
+*),
+
+
+ * @OA\PUT(
+ *     path="/api/commandes/{id}/traiter",
+ *     summary="traiter des commandes ",
+ *     description="",
+ *         security={
+ *    {       "BearerAuth": {}}
+ *         },
+ * @OA\Response(response="200", description="OK"),
+ * @OA\Response(response="404", description="Not Found"),
+ * @OA\Response(response="500", description="Internal Server Error"),
+ *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+ * ),
+ *     tags={"gestion  commander"},
+*),
+
+
+ * @OA\GET(
+ *     path="/api/mes-commandes",
+ *     summary="commande de l'utilisateur connecter",
+ *     description="",
+ *         security={
+ *    {       "BearerAuth": {}}
+ *         },
+ * @OA\Response(response="200", description="OK"),
+ * @OA\Response(response="404", description="Not Found"),
+ * @OA\Response(response="500", description="Internal Server Error"),
+ *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+ * ),
+ *     tags={"gestion  commander"},
 *),
 
 
  * @OA\POST(
- *     path="/api/users/{id}/deactivate",
- *     summary="déactiver un utilisateur",
+ *     path="/api/commandes/{id}",
+ *     summary="supprimer un commande",
  *     description="",
  *         security={
  *    {       "BearerAuth": {}}
@@ -108,30 +118,29 @@ namespace App\Http\Controllers\Annotations ;
  * @OA\Response(response="403", description="Forbidden"),
  *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
  * ),
- *     tags={"gestion utilisateur"},
+ *     tags={"gestion  commander"},
 *),
 
 
- * @OA\POST(
- *     path="/api/users/{id}/activate",
- *     summary="activé un utilisateur",
+ * @OA\GET(
+ *     path="/api/commandes",
+ *     summary="commande du producteurs",
  *     description="",
  *         security={
  *    {       "BearerAuth": {}}
  *         },
- * @OA\Response(response="201", description="Created successfully"),
- * @OA\Response(response="400", description="Bad Request"),
- * @OA\Response(response="401", description="Unauthorized"),
- * @OA\Response(response="403", description="Forbidden"),
+ * @OA\Response(response="200", description="OK"),
+ * @OA\Response(response="404", description="Not Found"),
+ * @OA\Response(response="500", description="Internal Server Error"),
  *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
  * ),
- *     tags={"gestion utilisateur"},
+ *     tags={"gestion  commander"},
 *),
 
 
  * @OA\POST(
- *     path="/api/users/{id}/role",
- *     summary="changer le role d'un utilisateur",
+ *     path="/api/commander",
+ *     summary="ajouter une commande",
  *     description="",
  *         security={
  *    {       "BearerAuth": {}}
@@ -140,8 +149,6 @@ namespace App\Http\Controllers\Annotations ;
  * @OA\Response(response="400", description="Bad Request"),
  * @OA\Response(response="401", description="Unauthorized"),
  * @OA\Response(response="403", description="Forbidden"),
- *     @OA\Parameter(in="path", name="id", required=false, @OA\Schema(type="string")
- * ),
  *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
  * ),
  *     @OA\RequestBody(
@@ -151,31 +158,17 @@ namespace App\Http\Controllers\Annotations ;
  *             @OA\Schema(
  *                 type="object",
  *                 properties={
- *                     @OA\Property(property="name", type="string"),
+ *                     @OA\Property(property="montant_total", type="integer"),
+ *                     @OA\Property(property="produits", type="string", format="binary"),
+ *                     @OA\Property(property="payment_method", type="string"),
  *                 },
  *             ),
  *         ),
  *     ),
- *     tags={"gestion utilisateur"},
-*),
-
-
- * @OA\GET(
- *     path="/api/users",
- *     summary="afficher la liste des utilisateurs",
- *     description="",
- *         security={
- *    {       "BearerAuth": {}}
- *         },
- * @OA\Response(response="200", description="OK"),
- * @OA\Response(response="404", description="Not Found"),
- * @OA\Response(response="500", description="Internal Server Error"),
- *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
- * ),
- *     tags={"gestion utilisateur"},
+ *     tags={"gestion  commander"},
 *),
 
 
 */
 
- class GestionutilisateurAnnotationController {}
+ class GestioncommanderAnnotationController {}

@@ -10,9 +10,12 @@ class Commande extends Model
     use HasFactory;
 
     protected $guarded = [];
+  
     public function produits()
     {
-        return $this->belongsToMany(Produit::class, 'commande_produit')->withPivot('quantite');
+        return $this->belongsToMany(Produit::class, 'commande_produit')
+                    ->withPivot('quantite', 'montant')
+                    ->withTimestamps();
     }
     
     public function calculerMontantTotal()
@@ -25,24 +28,12 @@ class Commande extends Model
 
         return $total;
     }
-    public function validerCommande()
-    {
-        $this->etat_commande = 'validée';
-        $this->save();
-
-        foreach ($this->produits as $produit) {
-            $produit->quantite -= $produit->pivot->quantite;
-            $produit->save();
-        }
-    }
-    public function expedierCommande()
-    {
-        $this->etat_commande = 'expédiée';
-        $this->save();
-    }
+  
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
+
+    
 }

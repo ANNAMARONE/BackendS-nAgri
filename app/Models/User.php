@@ -3,18 +3,20 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements JWTSubject , MustVerifyEmail
 {
     use HasFactory, Notifiable;
     use HasRoles;
 function produits(){
-    return $this->hasMany(produit::class,'user_id');
+    return $this->hasMany(Produit::class,'user_id');
 }
 public function commentairs(){
     return $this->hasMany(Commentaire::class);
@@ -24,7 +26,7 @@ public function forums(){
 }
 public function commandes()
 {
-    return $this->hasMany(Commande::class);
+    return $this->hasMany(Commande::class,'user_id');
 }
 
 public function producteur()

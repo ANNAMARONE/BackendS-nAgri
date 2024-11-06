@@ -40,4 +40,9 @@ return [
         ],
     ],
 
+
+'naboopay' => [
+    'base_url' => env('NABOOPAY_BASE_URL', 'https://api.naboopay.com'), // Assurez-vous que cela pointe vers l'API correcte
+],
+
 ];
