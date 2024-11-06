@@ -102,9 +102,11 @@ class EvenementController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         try {
             if (!$request->user()) {
                 return response()->json(['error' => 'Veuillez vous connecter.'], 401);
+
             }
             $evenement = evenement::findOrFail($id);
             $validator = Validator::make($request->all(), [

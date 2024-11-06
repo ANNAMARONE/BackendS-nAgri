@@ -62,7 +62,7 @@ class ArticleController extends Controller
             $image = $request->file('image');
             $filename = time() . '.' . $image->getClientOriginalExtension();
             $path = $image->storeAs('images', $filename, 'public');
-            $article->image = $filename;
+            $article->image =$path;
         }
         $article->save();
         return response()->json([
