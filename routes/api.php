@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\IPNController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
@@ -41,6 +42,7 @@ Route::group(['middleware'=>'api',
     Route::post('/check-unique', [AuthController::class, 'checkUnique']);
 
 });
+Route::post('/notification.php', [IPNController::class, 'handleIPN']);
 Route::get('/evenements',[EvenementController::class,'index']);
   
 Route::get('/evenement/{id}', [EvenementController::class,'show']);
@@ -94,8 +96,10 @@ route::get('/statistics', [StatisticsController::class, 'index']);
 route::get('/historiqueCommande',[CommandeController::class,'AfficherCommandesProduitsUser']);
 Route::delete('/commandes/{id}', [CommandeController::class, 'supprimerCommande']);
 Route::put('/commandes/{id}/traiter', [CommandeController::class, 'TraiterCommande']);
-Route::get('payment/success/{commande}', [CommandeController::class, 'success'])->name('payment.success');
-Route::get('payment/cancel/{commande}', [CommandeController::class, 'cancel'])->name('payment.cancel');
+// Routes pour le paiement
+Route::get('/payment/success/{commandeId}', [CommandeController::class, 'success'])->name('payment.success');
+Route::get('/payment/cancel/{commandeId}', [CommandeController::class, 'cancel'])->name('payment.cancel');
+
 
     //gestion des produits
   Route::get('afficher_produitParUser',[ProduitController::class,'AfficheProduitParUser']);

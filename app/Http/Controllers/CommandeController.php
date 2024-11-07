@@ -172,6 +172,7 @@ class CommandeController extends Controller
             // URL de retour après paiement
             $invoice->setReturnUrl(route('payment.success', ['commande' => $commande->id]));
             $invoice->setCancelUrl(route('payment.cancel', ['commande' => $commande->id]));
+            
 
             // Créer l'invoice et obtenir le lien de paiement
             if ($invoice->create()) {
@@ -180,8 +181,7 @@ class CommandeController extends Controller
                 // Mettez à jour le paiem   ent avec le lien de transaction
                 $payment->transaction_id = $invoice->getInvoiceUrl(); 
                 $payment->save();
-                Mail::to($user->email)->send(new CommandeCreated($commande,$paymentLink));
-             
+                Mail::to($user->email)->send(new CommandeCreated($commande,$paymentLink));            
        
            
                 return response()->json([
@@ -259,55 +259,61 @@ public function sendCommandeInfo($commandeId)
     
 
     
-    
-    public function success(Request $request, $commandeId)
-    {
-        try {
-            // Récupérer la commande
-            $commande = Commande::findOrFail($commandeId);
+public function success(Request $request, $commandeId)
+{
+    try {
+        // Récupérer la commande
+        $commande = Commande::findOrFail($commandeId);
 
-            // Vérifier si le token de paiement est présent
-            if (!$request->has('token')) {
-                return response()->json(['message' => 'Token de paiement manquant.'], 400);
-            }
-
-            $token = $request->input('token');
-            $invoice = new CheckoutInvoice();
-
-            // Confirmer le paiement avec le token
-            if ($invoice->confirm($token)) {
-                // Mettre à jour le statut de la commande et du paiement
-                if ($invoice->getStatus() === 'completed') {
-                    $commande->status_de_commande = 'payé';
-                    $commande->save();
-
-                    // Mettre à jour le statut du paiement
-                    $payment = Payment::where('commande_id', $commande->id)->first();
-                    $payment->payment_status = 'completed';
-                    $payment->save();
-
-                    return response()->json([
-                        'message' => 'Paiement réussi.',
-                        'commande' => $commande,
-                        'receipt_url' => $invoice->getReceiptUrl()
-                    ], 200);
-                }
-            }
-
-            // Si le paiement n'est pas confirmé ou est annulé
+        // Vérifier si le token de paiement est présent
+        if (!$request->has('token')) {
             return response()->json([
-                'message' => 'Paiement non confirmé ou annulé.',
-                'status' => $invoice->getStatus()
+                'message' => 'Token de paiement manquant.'
             ], 400);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Une erreur est survenue lors du traitement du paiement.',
-                'error' => $e->getMessage(),
-            ], 500);
         }
-    }
 
+        $token = $request->input('token');
+        $invoice = new CheckoutInvoice();
+
+        // Confirmer le paiement avec le token
+        if ($invoice->confirm($token)) {
+            // Mettre à jour le statut de la commande et du paiement
+            if ($invoice->getStatus() === 'completed') {
+                $commande->status_de_commande = 'payé';
+                $commande->save();
+
+                // Mettre à jour le statut du paiement
+                $payment = Payment::where('commande_id', $commande->id)->first();
+                $payment->payment_status = 'completed';
+                $payment->save();
+
+                // Retourner une réponse JSON avec les informations du paiement
+                return response()->json([
+                    'message' => 'Paiement réussi.',
+                    'commande' => $commande,
+                    'receipt_url' => $invoice->getReceiptUrl()
+                ], 200);
+            } else {
+                return response()->json([
+                    'message' => 'Le paiement n\'est pas encore confirmé.',
+                    'status' => $invoice->getStatus()
+                ], 400);
+            }
+        }
+
+        // Si la confirmation du paiement échoue
+        return response()->json([
+            'message' => 'Paiement non confirmé ou annulé.',
+            'status' => $invoice->getStatus()
+        ], 400);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Une erreur est survenue lors du traitement du paiement.',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
     /**
      * Gestion du retour d'annulation de paiement.
      */
@@ -316,20 +322,21 @@ public function sendCommandeInfo($commandeId)
         try {
             // Récupérer la commande
             $commande = Commande::findOrFail($commandeId);
-
+    
             // Mettre à jour le statut de la commande et du paiement
             $commande->status_de_commande = 'annulé';
             $commande->save();
-
+    
             $payment = Payment::where('commande_id', $commande->id)->first();
             $payment->payment_status = 'cancelled';
             $payment->save();
-
+    
+            // Retourner une réponse JSON indiquant que le paiement a été annulé
             return response()->json([
                 'message' => 'Le paiement a été annulé.',
                 'commande' => $commande
             ], 200);
-
+    
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Une erreur est survenue lors du traitement de l\'annulation.',
@@ -337,6 +344,7 @@ public function sendCommandeInfo($commandeId)
             ], 500);
         }
     }
+    
        
 public function AfficherCommandes()
 {
