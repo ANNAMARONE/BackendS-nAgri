@@ -25,7 +25,7 @@ class ProduitController extends Controller
     public function index()
     {
       
-        $produits = Produit::paginate(10);
+        $produits = Produit::where('statut','!=','en rupture')->paginate(10);
         if ($produits->isEmpty()) {
             return response()->json(['message' => 'Aucune produit trouvée.'], 404);
         }

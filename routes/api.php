@@ -97,8 +97,8 @@ route::get('/historiqueCommande',[CommandeController::class,'AfficherCommandesPr
 Route::delete('/commandes/{id}', [CommandeController::class, 'supprimerCommande']);
 Route::put('/commandes/{id}/traiter', [CommandeController::class, 'TraiterCommande']);
 // Routes pour le paiement
-Route::get('/payment/success/{commandeId}', [CommandeController::class, 'success'])->name('payment.success');
-Route::get('/payment/cancel/{commandeId}', [CommandeController::class, 'cancel'])->name('payment.cancel');
+Route::get('/payment/success/{commande}', [CommandeController::class, 'success'])->name('payment.success');
+Route::get('/payment/cancel/{commande}', [CommandeController::class, 'cancel'])->name('payment.cancel');
 
 
     //gestion des produits

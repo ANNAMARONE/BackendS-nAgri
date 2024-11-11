@@ -139,19 +139,18 @@ class ForumController extends Controller
 
     }
     public function commentaireForum(Request $request, $id)
-    {
-       
-        $forum = Forum::with('commentaires','user')->find($id);
-        if(!$forum){
-            return response()->json(['message' => 'Forum non trouvé'], 404);
-        }
-    
-        // Retourne le forum et ses commentaires
-        return response()->json([
-            'forum' => $forum,
-            'commentaires' => $forum->commentaires
-        ], 200);
+{
+    // Charger le forum avec ses commentaires et les réponses à ces commentaires
+    $forum = Forum::with(['commentaires.user', 'commentaires.replies.user', 'user'])->find($id);
+    if (!$forum) {
+        return response()->json(['message' => 'Forum non trouvé'], 404);
     }
-    
-    
+
+    // Retourner le forum, ses commentaires et les réponses associées
+    return response()->json([
+        'forum' => $forum,
+        'commentaires' => $forum->commentaires
+    ], 200);
+}
+  
 }

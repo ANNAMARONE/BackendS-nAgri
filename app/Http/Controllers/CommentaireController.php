@@ -82,7 +82,7 @@ public function ReponseCommentaire(Request $request, $id)
 }
 public function AfficherReponses($id)
 {
-    // Charger le commentaire avec les réponses et les informations sur les utilisateurs des réponses
+    // Charger le commentaire avec les réponses et les utilisateurs associés
     $commentaire = Commentaire::with(['replies.user'])->find($id);
 
     // Vérifier si le commentaire existe
@@ -96,7 +96,14 @@ public function AfficherReponses($id)
     // Préparer les données pour le retour
     $data = [
         'commentaire' => $commentaire,
-        'reponses' => $commentaire->replies
+        'reponses' => $commentaire->replies->map(function ($reply) {
+            return [
+                'id' => $reply->id,
+                'contenu' => $reply->contenu,
+                'utilisateur' => $reply->user ? $reply->user->name : 'Utilisateur inconnu',
+                'date' => $reply->created_at
+            ];
+        })
     ];
 
     return response()->json([

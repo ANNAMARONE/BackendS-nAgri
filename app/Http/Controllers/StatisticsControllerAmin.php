@@ -8,18 +8,31 @@ use Illuminate\Http\Request;
 
 class StatisticsControllerAmin extends Controller
 {
-    public function index(): \Illuminate\Http\JsonResponse // Spécification du type de retour
+    public function index(): \Illuminate\Http\JsonResponse
     {
+        // Nombre d'utilisateurs
         $nombreUtilisateurs = User::count();
+    
+        // Nombre de ventes (commandes)
         $nombreVentes = Commande::count(); 
+    
+        // Nombre de producteurs
         $nombreProducteurs = User::where('role', 'producteur')->count();
-
+    
+        // Calcul du revenu total de toutes les commandes
+        $totalRevenue = Commande::sum('montant_total'); // Somme de la colonne montant_total de toutes les commandes
+        
+        // Assurez-vous que $totalRevenue est bien un float
+        $totalRevenue = (float) $totalRevenue;
+    
         return response()->json([
             'utilisateurs' => $nombreUtilisateurs,
             'ventes' => $nombreVentes,
             'producteurs' => $nombreProducteurs,
+            'total_revenue' => $totalRevenue,
         ]);
     }
+    
     public function evolutionMontantCommandes()
     {
        
