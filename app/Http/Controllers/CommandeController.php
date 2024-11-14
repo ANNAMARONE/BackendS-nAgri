@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Payment;
-
 use App\Models\Produit;
+
 use App\Models\Commande;
 use App\Mail\CommandeInfo;
 use Illuminate\Http\Request;
 use App\Mail\CommandeCreated;
+use App\Models\CustomNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -93,40 +94,69 @@ class CommandeController extends Controller
         $commande->status_de_commande = 'en_attente';
         $commande->payment_method = $validatedData['payment_method'];
         $commande->save();
-
     
-      
+   
         // Variable pour calculer le montant total de la commande
         $montantTotal = 0;
-      
-        foreach ($validatedData['produits'] as $produitData) {
-            // Récupérer le produit pour obtenir son prix unitaire
-            $produit = Produit::findOrFail($produitData['produit_id']);
-            $quantite = $produitData['quantite'];
-            $montantProduit = $produit->prix * $quantite;
-        
+        $producteursNotifies = [];
+   // Boucle pour chaque produit
+   foreach ($validatedData['produits'] as $produitData) {
+    // Récupérer le produit pour obtenir son prix unitaire
+    $produit = Produit::findOrFail($produitData['produit_id']);
+    $quantite = $produitData['quantite'];
+    $montantProduit = $produit->prix * $quantite;
 
-            // Vérifier si le stock est suffisant
-            if ($produit->quantite < $quantite) {
-                return response()->json(['message' => 'Quantité insuffisante pour le produit: ' . $produit->nom], 400);
-            }
+    // Vérifier si le stock est suffisant
+    if ($produit->quantite < $quantite) {
+        return response()->json(['message' => 'Quantité insuffisante pour le produit: ' . $produit->nom], 400);
+    }
 
-            // Décrémenter la quantité du produit
-            $produit->decrementerQuantite($quantite);
+    // Décrémenter la quantité du produit
+    $produit->decrementerQuantite($quantite);
 
-              // Vérifier si la quantité est maintenant 0 et mettre à jour le statut
-                if ($produit->quantite == 0) {
-                    $produit->statut = 'en rupture';
-                    $produit->save(); 
-                }
-            // Ajouter le produit à la commande avec la quantité et le montant
-            $commande->produits()->attach($produit->id, [
-                'quantite' => $quantite,
-                'montant' => $montantProduit,
+    // Vérifier si la quantité est maintenant 0 et mettre à jour le statut
+    if ($produit->quantite == 0) {
+        $produit->statut = 'en rupture';
+        $produit->save(); 
+    }
+
+    // Ajouter le produit à la commande avec la quantité et le montant
+    $commande->produits()->attach($produit->id, [
+        'quantite' => $quantite,
+        'montant' => $montantProduit,
+    ]);
+
+    // Ajouter au montant total
+    $montantTotal += $montantProduit;
+
+    // Récupérer le producteur (assurez-vous que la relation est correctement définie)
+    $producteur = $produit->producteur; // Utilisez `producteur` si chaque produit a un seul producteur
+    
+    if ($producteur && !in_array($producteur->id, $producteursNotifies)) {
+        try {
+            // Créer une notification pour le producteur
+            CustomNotification::create([
+                'notifiable_id' => $producteur->id,
+                'notifiable_type' => get_class($producteur),
+                'message' => "Une nouvelle commande a été passée pour votre produit : {$produit->libelle}.",
+                'is_read' => false,
             ]);
 
-            $montantTotal += $montantProduit;
+            \Log::info('Notification créée avec succès pour le producteur ID : ' . $producteur->id);
+
+            $producteursNotifies[] = $producteur->id; // Marquer ce producteur comme notifié
+        } catch (\Exception $e) {
+            \Log::error('Erreur lors de la création de la notification : ' . $e->getMessage());
+            
+            // Retourner la réponse avec l'erreur dans le message
+            return response()->json([
+                'message' => 'Erreur lors de la création de la notification.',
+                'error' => $e->getMessage(), // Inclure le message d'erreur dans la réponse
+            ], 500);
         }
+        
+    }
+}
      
 
         // Vérifiez ici que le montant total est correct
@@ -149,8 +179,10 @@ class CommandeController extends Controller
         $payment->payment_status = 'en_attente';
         $payment->save();
         $this->sendCommandeInfo($commande->id);
+       
         if ($commande->payment_method == "Paiement à la livraison") {
             Mail::to($user->email)->send(new CommandeCreated($commande, "Paiement à la livraison"));
+            
         }
         
         // Gérer le paiement en ligne avec PayDunya
@@ -188,7 +220,7 @@ class CommandeController extends Controller
                 $payment->save();
                 Mail::to($user->email)->send(new CommandeCreated($commande,$paymentLink));            
        
-           
+             
                 return response()->json([
                     'message' => 'Commande créée avec succès. Veuillez procéder au paiement.',
                     'payment_link' => $paymentLink,
@@ -298,6 +330,7 @@ public function success(Request $request, $commandeId)
     } catch (\Exception $e) {
         return response()->json(['message' => 'Une erreur est survenue lors du traitement du paiement.', 'error' => $e->getMessage()], 500);
     }
+
 }
 
 
@@ -501,5 +534,32 @@ public function commandePourAdmin()
     ]);
 }
 
+public function tableauDeBord()
+{
+    $producteur = auth()->user();
 
+    $notifications = CustomNotification::where('notifiable_id', $producteur->id)
+        ->where('notifiable_type', get_class($producteur))
+        ->where('is_read', false)
+        ->get();
+
+    $nombreNotificationsNonLues = $notifications->count();
+
+    return response()->json([
+        'notifications' => $notifications,
+        'nombreNotificationsNonLues' => $nombreNotificationsNonLues,
+    ]);
+}
+
+public function getNombreNotification()
+{
+    $user = Auth::user(); 
+    
+    $unreadCount = CustomNotification::where('notifiable_id', $user->id)
+                                      ->where('notifiable_type', get_class($user))
+                                      ->where('is_read', false)
+                                      ->count();
+    
+    return response()->json(['unread_count' => $unreadCount]);
+}
 }

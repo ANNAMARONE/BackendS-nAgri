@@ -91,6 +91,8 @@ Route::post('/payment/callback', [CommandeController::class, 'handleCallback']);
     Route::post('ajouterStock/{id}',[ProduitController::class,'ajouterStock']);
     Route::post('modifierStock/{id}',[ProduitController::class,'retirerStock']);
     Route::get('/afficherProduit',[ProduitController::class,'AfficheAllProduitUser']);
+    Route::get('/notifications', [CommandeController::class, 'getNombreNotification']);
+
 //gestion des commandes 
 route::get('/statistics', [StatisticsController::class, 'index']);
 route::get('/historiqueCommande',[CommandeController::class,'AfficherCommandesProduitsUser']);
@@ -106,7 +108,8 @@ Route::get('/payment/cancel/{commande}', [CommandeController::class, 'cancel'])-
   Route::post('/Ajouter_produits', [ProduitController::class,'store']);
   Route::post('/modifier_produit/{id}', [ProduitController::class,'update']);
   Route::delete('/supprimer_produit/{id}', [ProduitController::class,'destroy']);
-
+  Route::get('/producteur/tableau-de-bord', [CommandeController::class, 'tableauDeBord'])
+  ->name('producteur.tableauDeBord');
 
   });
   

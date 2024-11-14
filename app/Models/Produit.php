@@ -16,11 +16,15 @@ class Produit extends Model
         return $this->belongsTo(User::class);
     }
   // Dans le modèle Produit
+//   public function producteur()
+//   {
+//       return $this->belongsTo(User::class, 'producteur_id'); 
+//   }
+
   public function producteur()
   {
-      return $this->belongsTo(User::class, 'producteur_id'); 
+      return $this->belongsTo(User::class, 'user_id'); // 'user_id' doit correspondre à la clé étrangère dans la table produits
   }
-
     
     function categorie(){
         return $this->belongsTo(categorieProduit::class);
